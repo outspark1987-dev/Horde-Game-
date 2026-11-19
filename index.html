@@ -92,7 +92,7 @@ let sv={t:{},souls:0,best:1,spd:1,run:null,glory:0,asc:0};
 try{const x=JSON.parse(localStorage.getItem(SAVE));if(x)sv=Object.assign(sv,x)}catch(e){}
 const T=id=>sv.t[id]|0;
 // ---------- Definitionen ----------
-const BT=[{n:'Hütte',base:20,cyc:4,cnt:l=>l+1+T('hut')},{n:'Schießstand',base:45,cyc:5,cnt:l=>l+T('arch')},{n:'Kaserne',base:150,cyc:8,cnt:l=>Math.ceil(l/2)+T('barr')},{n:'Magierturm',base:300,cyc:9,cnt:l=>Math.ceil(l/3)}];
+const BT=[{n:'Hütte',base:20,cyc:4,cnt:l=>l+T('hut')},{n:'Schießstand',base:45,cyc:5,cnt:l=>l+T('arch')},{n:'Kaserne',base:150,cyc:8,cnt:l=>Math.ceil(l/2)+T('barr')},{n:'Magierturm',base:300,cyc:9,cnt:l=>Math.ceil(l/3)}];
 const U=[
 {n:'Bauer',hp:30,dmg:5,cd:.8,rng:9,spd:44,sz:15},
 {n:'Bogenschütze',hp:18,dmg:6,cd:1,rng:150,spd:38,sz:15},
@@ -154,10 +154,10 @@ function genGround(t){theme=t;const th=THEMES[t];gx.setTransform(GR,0,0,GR,0,0);
 let S,P=[],E=[],pr=[],pt=[],hP,hE,lP=new Int32Array(8192),lE=new Int32Array(8192),GW,GH,SC=1,cv=$('#cv'),ctx=cv.getContext('2d'),paused=false,sel=0,acc=0,hpPeak=1,hpNow=0;
 const castMax=()=>1500*(1+.2*T('castle'));
 function newRun(){
- S={l:1,t:0,gold:100+50*T('gold')+40*sv.asc,c:castMax(),b:Array(15).fill(null),sp:0,sd:0,rp:0,over:0,kills:0};
+ S={l:1,t:0,gold:60+50*T('gold')+40*sv.asc,c:castMax(),b:Array(15).fill(null),sp:0,sd:0,rp:0,over:0,kills:0};
  S.b[0]={k:0,l:1+T('start'),c:1};P=[];E=[];pr=[];pt=[];hpPeak=1;$('#over').style.display='none';genGround(0);startLevel()}
 function startLevel(){S.t=0;S.sp=0;S.sd=0;S.rp=0;hpPeak=1;const t=((S.l-1)/6|0)%4;if(t!=theme)genGround(t);else{dc.setTransform(1,0,0,1,0,0);dc.globalCompositeOperation='destination-out';dc.fillStyle='rgba(0,0,0,.45)';dc.fillRect(0,0,DC.width,DC.height);dc.globalCompositeOperation='source-over'}}
-const WN=L=>Math.round(waveN(L)*CF),waveN=L=>Math.round(20+11*L*(1+L*.015)),hpS=L=>1+.12*(L-1)+.004*(L-1)*(L-1),dmS=L=>1+.07*(L-1);
+const cfL=L=>1+(CF-1)*Math.min(1,(L-1)/6),WN=L=>Math.round(cfL(L)*(1+2.5*L+.55*L*L)),waveN=L=>Math.round(20+11*L*(1+L*.015)),hpS=L=>1+.12*(L-1)+.004*(L-1)*(L-1),dmS=L=>1+.07*(L-1);
 const cntOf=k=>S.b.filter(b=>b&&b.k==k).length;
 const bCost=k=>Math.ceil(BT[k].base*Math.pow(1.17,cntOf(k))*(1-.04*T('cost')));
 const uCost=b=>Math.ceil(BT[b.k].base*.9*Math.pow(1.4,b.l-1)*(1-.05*T('upg')));
@@ -172,13 +172,13 @@ function dec(x,z,r){const i=(decN++%3000)*8;decArr[i]=x;decArr[i+1]=z;decArr[i+2
 function flashFx(c,a){const f=$('#flash');f.style.transition='none';f.style.background=c;f.style.opacity=a;requestAnimationFrame(()=>requestAnimationFrame(()=>{f.style.transition='opacity .7s';f.style.opacity=0}))}
 function levelFx(){if(GL){ring(CAST,WH/2,1200,[.5,.8,1],1.2);ring(CAST,WH/2,700,[1,.9,.5],.9);flashFx('#bfe0ff',.3)}}
 function mkU(k,team,x,y,hm,dm,tier){const d=U[k];return{tier:tier|0,k,t:team,x,y,hp:d.hp*hm,mhp:d.hp*hm,dmg:d.dmg*dm,cdm:d.cd,cd:R(),rng:d.rng,spd:d.spd*(team?1:1+.06*T('speed')),sz:d.sz,arm:d.arm||0,tg:null,rt:R()*.3,at:0,ph:R()*9,ar:team?9:11,fl:0}}
-function produce(b){const k=b.k,n=Math.ceil(BT[k].cnt(b.l)*CF),m=(1+.08*(b.l-1))*(1+.03*sv.glory)/CF,tr=tierOf(b.l);let dm=m*(1+.05*T('war')),hm=m;
+function produce(b){const k=b.k,bc=1+(CF-1)*Math.min(1,(b.l-1)/6),n=Math.max(1,Math.round(BT[k].cnt(b.l)*bc)),m=(1+.08*(b.l-1))*(1+.03*sv.glory)/bc,tr=tierOf(b.l);let dm=m*(1+.05*T('war')),hm=m;
  if(k==1)dm*=1+.12*T('bow');if(k==3)dm*=1+.15*T('magedmg');if(k==2)hm*=1+.15*T('kh');
  for(let i=0;i<n&&P.length<CAP[0];i++)P.push(mkU(k,0,CAST+14+R()*26,LY0+R()*(LY1-LY0),hm,dm,tr))}
 function pick(L){const w=[10,L>=2?4+L:0,L>=4?2+L/2:0,L>=6?2+L/3:0];let s=w[0]+w[1]+w[2]+w[3],r=R()*s;for(let i=0;i<4;i++){if((r-=w[i])<0)return[4,5,6,7][i]}return 4}
-function spawnE(k){if(E.length>=CAP[1])return;const L=S.l;{const cf=k==8?1:CF;E.push(mkU(k,1,WW+8+R()*50,LY0+R()*(LY1-LY0),hpS(L)/cf,dmS(L)/cf))}}
+function spawnE(k){if(E.length>=CAP[1])return;const L=S.l;{const cf=k==8?1:cfL(L);E.push(mkU(k,1,WW+8+R()*50,LY0+R()*(LY1-LY0),hpS(L)/cf,dmS(L)/cf))}}
 function dmg(t,d,sx,sy){d*=1-t.arm;t.hp-=d;t.fl=.1;if(t.hp<=0)die(t)}
-function die(t){const x=t.x,y=t.y,cf=t.k==8?1:CF;
+function die(t){const x=t.x,y=t.y,cf=t.k==8?1:cfL(S.l);
  if(t.t){const d=U[t.k];S.gold+=d.g/cf*(1+.12*T('loot'))*(1+.02*Math.min(S.l,30))*(1+.03*sv.glory);let s=d.s*(1+.15*T('soul'))/cf;while(s>=1){sv.souls++;s--}if(R()<s)sv.souls++;S.kills++}
  if(GL){corp[ci++%1600]={k:t.k,x,z:y,yaw:t.t?Math.PI:0,t0:performance.now(),s:t.sz/15*(1+.12*t.tier)};dec(x,y,t.sz*.5+R()*6);
   const big=t.sz>=19;for(let i=0;i<(big?7:3);i++)fx(x,y,8,(R()-.5)*70,(R()-.5)*50,20+R()*50,.6,cBlood,1.8,2,160);
@@ -212,7 +212,7 @@ function stepTeam(A,sH,sL,eH,eL,EA,dt){
      if(u.rng>40&&d<u.rng*.5){mx=-dx/d*.5;my=-dy/d*.5;mv=1}}
    else{mx=dx/d;my=dy/d;mv=1}}
   else if(tm){if(u.x>CAST+u.rng){mx=-1;mv=1}else if(u.cd<=0){u.cd=u.cdm;u.at=.2;castleHit(u)}}
-  else if(u.x<WW*.5){mx=1;mv=1}
+  else if(u.x<WW+30){mx=1;mv=1}
   let sx=0,sy=0,c=(u.y/CS|0)*GW+(u.x/CS|0),n=0;
   for(let j=sH[c];j>=0&&n<6;j=sL[j],n++){const o=A[j];if(o===u)continue;const dx=u.x-o.x,dy=u.y-o.y,d2=dx*dx+dy*dy,r=u.sz*.55;if(d2<r*r&&d2>.01){const d=Math.sqrt(d2),f=(1-d/r);sx+=dx/d*f;sy+=dy/d*f}}
   if(tm&&u.x<CAST+u.rng+4&&!t){sx=0}
@@ -270,7 +270,7 @@ function refresh(){
   d.className='slot t'+tierOf(b.l)+(S.gold>=c?'':' na');d.querySelector('.cs').textContent='🪙'+nf(c)});
  tbs.forEach((t,j)=>{if(!j){t.className='tb';return}const k=j-1,c=bCost(k);t.querySelector('.cs').textContent='🪙'+nf(c);t.className='tb'+(k==3&&!T('mage')?' lock':S.gold>=c?'':' na')});
  $('#lvl').textContent='Level '+S.l;$('.crown').textContent='♛ '+RANKS[Math.min(sv.asc,9)]+(sv.glory?' · ⭐'+sv.glory:'');
- let hp=0;for(const u of E)hp+=u.hp;hp+=Math.max(0,WN(S.l)-S.sd)*U[4].hp*hpS(S.l)/CF;hpNow=hp;if(hp>hpPeak)hpPeak=hp;
+ let hp=0;for(const u of E)hp+=u.hp;hp+=Math.max(0,WN(S.l)-S.sd)*U[4].hp*hpS(S.l)/cfL(S.l);hpNow=hp;if(hp>hpPeak)hpPeak=hp;
  $('#bE').style.transform=`scaleX(${Math.min(1,hp/hpPeak)})`;$('#tE').textContent=nf(hp);
  $('#bC').style.transform=`scaleX(${Math.max(0,S.c)/castMax()})`;$('#tC').textContent='Burg '+nf(S.c);
  $('#bL').style.transform=`scaleX(${S.t/D})`;const r=Math.max(0,D-S.t)|0;$('#tL').textContent=(r/60|0)+':'+String(r%60).padStart(2,'0');
