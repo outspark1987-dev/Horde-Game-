@@ -658,8 +658,8 @@ if(sv.run&&sv.run.b){const r=sv.run;S.l=r.l;S.t=Math.min(r.t,D-5);S.gold=r.gold;
 $('#bSpd').textContent=sv.spd+'x';
 let last=performance.now(),rt=0;
 function loop(now){let dt=Math.min(.05,(now-last)/1000);last=now;
- {const rdt=dt;let sc=1;if(slowT>0){slowT-=rdt;sc=.25}if(!paused&&!S.over&&!S.choose){const n=sv.spd;for(let i=0;i<n;i++)update(dt*sc)}}
- if(!window.mineOpen)(GL?draw3d(dt):draw());rt-=dt;if(rt<=0){rt=.15;refresh()}prog();requestAnimationFrame(loop)}
+ {const rdt=dt;let sc=1;if(slowT>0){slowT-=rdt;sc=.25}if(!paused&&!S.over&&!S.choose&&!window.launchOpen){const n=sv.spd;for(let i=0;i<n;i++)update(dt*sc)}}
+ if(!window.mineOpen&&!window.launchOpen)(GL?draw3d(dt):draw());rt-=dt;if(rt<=0){rt=.15;refresh()}prog();requestAnimationFrame(loop)}
 requestAnimationFrame(loop);
 {const mn=Math.min(480,(Date.now()-(sv.last||Date.now()))/60000);if(sv.last&&mn>=2){const g=Math.floor(mn*(.4+sv.best*.15)*(1+.25*T('offline'))*(1+.15*T('soul')));if(g>0){sv.souls+=g;setTimeout(()=>toast('Willkommen zurück! Offline: +'+g+' 💧'),1200)}}}
 setStance(sv.stance,1);setTimeout(()=>toast('Kaufe Gebäude unten (1–3). Tippe aufs Feld, um den Sammelpunkt zu setzen!'),500);
@@ -942,13 +942,19 @@ addIcon('m_drone',[[ell(64,64,50,22),'#ff9a3a',{nf:1,w:6}],[cir(114,64,12),'#e8e
 addIcon('m_luck',[[cir(44,44,22),'#4bd868'],[cir(84,44,22),'#4bd868'],[cir(44,84,22),'#4bd868'],[cir(84,84,22),'#4bd868'],['M64 64Q70 100 90 116','#2a8a48',{nf:1,w:8}],HL('M30 36A20 20 0 0 1 48 26L46 34A14 14 0 0 0 36 42Z',.5)]);
 addIcon('m_lens',[[cir(54,54,40),'#9ed8ff'],[cir(54,54,40),'#e8ecf4',{nf:1,w:8}],['M84 84L118 118','#9a6a3a',{nf:1,w:14}],HL('M30 44A28 28 0 0 1 52 28L50 36A20 20 0 0 0 36 48Z',.6)]);
 const RC=['#c3ccdc','#e8803a','#ffd54a','#4bdc6a','#5fb8ff'],RN=['Eisen','Kupfer','Gold','Uran','Kristall'],RI=['m_iron','m_copper','m_gold','m_uran','m_crys'];
-sv.mine=Object.assign({r:[0,0,0,0,0],up:{},lvl:1,xp:0,auto:1},sv.mine||{});if(!sv.mine.r||sv.mine.r.length<5)sv.mine.r=[0,0,0,0,0];
-const MU=[['laser','m_laser','Laserstärke','+Schaden',0,30,1.5],['multi','m_multi','Mehrfachlaser','+1 Ziel (max 8)',1,40,1.8,8],['range','m_range','Reichweite','+Laserreichweite',0,25,1.45],['engine','m_engine','Triebwerk','+Tempo',1,30,1.5],['energy','m_energy','Energiekern','+Energie & Ladung',2,20,1.55],['magnet','m_magnet','Magnet','+Sammelradius',0,20,1.5],['drone','m_drone','Orbit-Drohnen','+1 Drohne (max 8)',2,45,1.85,8],['luck','m_luck','Glückskleeblatt','+Ausbeute',2,60,1.6],['lens','m_lens','Kristalllinse','+Krit-Chance',4,8,1.6]];
-const U=id=>sv.mine.up[id]|0,ucost=(u)=>Math.ceil(u[5]*Math.pow(u[6],U(u[0])));
+sv.mine=Object.assign({r:[0,0,0,0,0],rk:{},lvl:1,xp:0,auto:1,q:{ast:0,rd:0,c0:0,c1:0,c2:0,c3:0,c4:0,del:0},done:{}},sv.mine||{});if(!sv.mine.r||sv.mine.r.length<5)sv.mine.r=[0,0,0,0,0];sv.mine.q=Object.assign({ast:0,rd:0,c0:0,c1:0,c2:0,c3:0,c4:0,del:0},sv.mine.q);sv.mine.rk=sv.mine.rk||{};sv.mine.done=sv.mine.done||{};
+addIcon('m_hub',[['M30 98L78 50','#9aa6bc',{nf:1,w:16}],[cir(84,44,22),'#9aa6bc'],[cir(84,44,9),'#2a3550',{s:0}],['M98 98L50 50','#e8a020',{nf:1,w:16}],[rrect(20,18,44,28,6),'#e8a020'],HL('M24 22H58V28H24Z',.5)]);
+addIcon('m_aoe',[[stp(64,64,56,30,10),'#ff7a22'],[stp(64,64,38,22,10),'#ffd54a'],[cir(64,64,14),'#fff',{s:0}]]);
+const STT={laser:['m_laser','Laserstärke','Schaden',.12],engine:['m_engine','Triebwerk','Tempo',.07],magnet:['m_magnet','Magnet','Sammelradius',.12],range:['m_range','Reichweite','Laserreichweite',.07],multi:['m_multi','Mehrfachlaser','Zielzahl (alle 2 Ränge +1)',.5],energy:['m_energy','Energiekern','Energie & Ladung',.15],drone:['m_drone','Orbit-Drohnen','Drohnen',1],luck:['m_luck','Glück','Ausbeute',.1],aoe:['m_aoe','Explosivladung','Flächenschaden',.08],lens:['m_lens','Kristalllinse','Krit-Chance',.025]};
+const ROWS=[['laser','engine'],['magnet','range'],['multi','energy'],['drone','luck'],['aoe','lens']],HB=[10,60,250,1000,4000],CB=[15,40,120,400,1500],RM=['I','II','III','IV','V'],NODES=[];
+for(let r=0;r<5;r++){NODES.push({id:'h'+r,x:0,y:r,hub:1,icon:'m_hub',name:'Werkstatt '+RM[r],desc:'Schaltet Reihe '+(r+1)+' frei',max:1,res:r,base:HB[r],req:r?'h'+(r-1):null});
+ for(let side=0;side<2;side++){const st=ROWS[r][side];for(let t=0;t<4;t++){const T=STT[st];NODES.push({id:st+t,x:(side?1:-1)*(t+1),y:r,icon:T[0],name:T[1]+' '+RM[t],desc:T[2],stat:st,per:T[3]*(1+t*.35),max:5,res:r,base:CB[r]*Math.pow(2.2,t),req:t?st+(t-1):'h'+r,hubreq:'h'+r})}}}
+const rank=id=>sv.mine.rk[id]|0,ncost=n=>Math.ceil(n.base*Math.pow(n.hub?1:1.45,rank(n.id))),nlock=n=>n.req&&!rank(n.req);
+let SC=null;const calc=()=>{const a={};for(const n of NODES)if(n.stat)a[n.stat]=(a[n.stat]||0)+rank(n.id)*n.per;return a};
 const fmt=n=>n>=1e9?(n/1e9).toFixed(1)+'B':n>=1e6?(n/1e6).toFixed(1)+'M':n>=1e4?(n/1e3).toFixed(1)+'K':Math.floor(n)+'';
 // ---- DOM
 const root=document.createElement('div');root.id='mine';
-root.innerHTML=`<canvas id="mcv"></canvas><div id="mres"></div><div id="mbar"><div class="mb e"><i></i><b></b></div><div class="mb x"><i></i><b></b></div></div><button id="mx" class="mbtn">✕</button><div id="mtabs"><button class="mbtn" id="mU">⬆ Upgrades</button><button class="mbtn" id="mD">📦 Liefern</button><button class="mbtn" id="mA">🤖 Auto</button></div><div id="mpan"></div>`;
+root.innerHTML=`<canvas id="mcv"></canvas><div id="mres"></div><div id="mbar"><div class="mb e"><i></i><b></b></div><div class="mb x"><i></i><b></b></div></div><button id="mx" class="mbtn">🏠 Spiele</button><div id="mtabs"><button class="mbtn" id="mU">⬆ Upgrades</button><button class="mbtn" id="mQ">📜 Quests</button><button class="mbtn" id="mB">⏳ Booster</button><button class="mbtn" id="mD">📦 Liefern</button><button class="mbtn" id="mA">🤖 Auto</button></div><div id="mpan"></div>`;
 document.body.appendChild(root);
 const st=document.createElement('style');st.textContent=`
 #mine{position:fixed;inset:0;z-index:15;display:none;background:#07060f;font-family:'Courier New',monospace;color:#fff;font-weight:700;letter-spacing:.04em;-webkit-user-select:none;user-select:none;touch-action:none}
@@ -961,8 +967,8 @@ const st=document.createElement('style');st.textContent=`
 .mbtn{background:#0b0a1acc;color:#fff;border:.15rem solid #fff;border-radius:.4rem;font:700 1rem 'Courier New',monospace;padding:.35rem .8rem;cursor:pointer;letter-spacing:.05em}.mbtn:hover{background:#fff;color:#000}.mbtn.on{background:#fff;color:#000}
 #mx{position:absolute;right:.7rem;top:.6rem;padding:.2rem .7rem;font-size:1.3rem;z-index:3}
 #mtabs{position:absolute;left:50%;bottom:.8rem;transform:translateX(-50%);display:flex;gap:.5rem;z-index:3}
-#mpan{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:min(56rem,94vw);max-height:76%;overflow:auto;background:#0a0f26f0;border:.2rem solid #fff;border-radius:.6rem;padding:.8rem;display:none;z-index:4;box-shadow:0 0 0 .2rem #000,0 0 2rem #4aa8ff55}
-#mpan h3{margin:.1rem 0 .6rem;font-size:1.1rem}
+#mpan{position:absolute;left:50%;top:48%;transform:translate(-50%,-50%);width:min(58rem,95vw);height:min(34rem,78%);overflow:auto;color:#0a1a30;background-color:#58b4ee;background-image:linear-gradient(#ffffff2e 1px,transparent 1px),linear-gradient(90deg,#ffffff2e 1px,transparent 1px);background-size:1.5rem 1.5rem;border:.55rem solid #b4b8c6;border-radius:.8rem;padding:.8rem;display:none;z-index:4;box-shadow:0 0 0 .2rem #000,inset 0 0 0 .2rem #6a6e80,0 0 2rem #000a}
+#mpan h3{margin:.1rem 0 .6rem;font-size:1.1rem;color:#0a1a30}#mtree{position:relative;margin:0 auto}#mtree svg{position:absolute;inset:0;width:100%;height:100%}.mn{position:absolute;width:3.5rem;height:3.5rem;border:.18rem solid #1a1230;border-radius:.3rem;background:linear-gradient(#ffe27a,#e8b820);display:flex;align-items:center;justify-content:center;cursor:pointer;box-shadow:0 .2rem 0 #0006}.mn img{width:80%;height:80%}.mn.hub{width:4rem;height:4rem}.mn.lk{background:#454a60;opacity:.85}.mn.lk img{filter:grayscale(1) brightness(.5)}.mn.mx{background:linear-gradient(#a8ff9a,#3cc850)}.mn.sel{outline:.25rem solid #fff}.mn .rk{position:absolute;right:.1rem;bottom:-.05rem;font-size:.7rem;color:#1a1230;text-shadow:0 0 .2rem #fff}.mn.can{animation:mcan 1.4s infinite}@keyframes mcan{50%{box-shadow:0 0 .8rem #fff,0 .2rem 0 #0006}}#mnfo{position:sticky;bottom:-.8rem;margin:.6rem -.8rem -.8rem;padding:.6rem .9rem;background:#0b1030;color:#fff;display:flex;gap:.8rem;align-items:center;justify-content:space-between;border-top:.2rem solid #fff}#mnfo b{color:#ffe27a}.qr{display:flex;align-items:center;gap:.7rem;padding:.5rem;background:#0b1030cc;color:#fff;border:.15rem solid #fff;border-radius:.4rem;margin-bottom:.4rem}.qr .pb{flex:1;height:.7rem;background:#2a3050;border-radius:.4rem;overflow:hidden}.qr .pb i{display:block;height:100%;background:#5aff7a}
 .mg{display:grid;grid-template-columns:repeat(auto-fill,minmax(15rem,1fr));gap:.5rem}
 .mu{display:flex;gap:.6rem;align-items:center;padding:.5rem;border:.15rem solid #5a6aa0;border-radius:.4rem;background:#141c3c;cursor:pointer}.mu:hover{border-color:#fff}.mu.ok{border-color:#ffd54a;background:#2a2a14}.mu img{height:2.6rem}.mu small{display:block;font-weight:400;opacity:.85}.mu .c{display:flex;align-items:center;gap:.3rem;font-size:.85rem}.mu .c img{height:1rem}
 `;document.head.appendChild(st);
@@ -986,20 +992,21 @@ for(let t=0;t<6;t++){SPR[t]=[];for(let v=0;v<3;v++)SPR[t][v]=mkAst(t,v+1)}
 // ---- Zustand
 const M={open:0,x:0,y:0,vx:0,vy:0,ang:-1.57,en:100,ast:[],pk:[],en2:[],fx:[],fl:[],drone:0,t:0,tick:0,tgt:[],ptr:null,keys:{},shk:0,flame:0,last:0,stars:[],nb:0};
 const lvM=()=>1+.06*(sv.mine.lvl-1);
-const ST=()=>({dmg:(9+5*U('laser'))*lvM(),tg:Math.min(8,1+U('multi')),rng:150+13*U('range'),spd:150+14*U('engine'),emax:100+25*U('energy'),reg:9+2*U('energy'),mag:55+14*U('magnet'),dr:Math.min(8,U('drone')),luck:1+.12*U('luck'),crit:.03*U('lens')});
+M.bt={};const BOOST=[['b2x','Doppelter Ertrag','Ressourcen ×2 für 60 s',2,200,60],['bov','Überladung','+60% Schaden, keine Energiekosten · 45 s',1,300,45],['bmag','Magnetsturm','Sammelradius ×4 für 40 s',0,500,40]];
+const ST=()=>{const a=SC||(SC=calc()),b=M.bt;return{dmg:10*(1+(a.laser||0))*lvM()*(b.bov>0?1.6:1),tg:Math.min(8,1+Math.floor(a.multi||0)),rng:150*(1+(a.range||0)),spd:150*(1+(a.engine||0)),emax:100*(1+(a.energy||0)),reg:9*(1+(a.energy||0)),mag:55*(1+(a.magnet||0)*1.2)*(b.bmag>0?4:1),dr:Math.min(10,Math.floor(a.drone||0)),luck:(1+(a.luck||0))*(b.b2x>0?2:1),crit:a.lens||0,aoe:a.aoe||0,free:b.bov>0}};
 for(let i=0;i<220;i++)M.stars.push([Math.random(),Math.random(),Math.random(),Math.random()*6]);
-function spawnAst(far){const L=sv.mine.lvl,s=ST(),vr=Math.hypot(W,H)/Z*.5,a=Math.random()*6.283,d=far?vr*(1.05+Math.random()*.5):Math.random()*vr*1.4,w=[50,L>=3?26:0,L>=6?16:0,L>=10?7:0,L>=14?5:0,18];let sm=0;for(const q of w)sm+=q;let r0=Math.random()*sm,t=0;for(;t<5;t++){if((r0-=w[t])<0)break}
+function spawnAst(far){const L=sv.mine.lvl,s=ST(),vr=Math.hypot(W,H)/Z*.62,a=Math.random()*6.283,d=far?vr*(1.05+Math.random()*.5):Math.random()*vr*1.4,w=[50,L>=3?26:0,L>=6?16:0,L>=10?7:0,L>=14?5:0,18];let sm=0;for(const q of w)sm+=q;let r0=Math.random()*sm,t=0;for(;t<5;t++){if((r0-=w[t])<0)break}
  const rad=(t==1?26:16)+Math.random()*(22+L*1.2),hp=rad*rad*.16*(1+.1*L)*[1,1.6,2.2,3,3.6,1.3][t];M.ast.push({x:M.x+Math.cos(a)*d,y:M.y+Math.sin(a)*d,r:rad,hp,mhp:hp,t,v:(Math.random()*3)|0,rot:Math.random()*6.28,rv:(Math.random()-.5)*.6,vx:(Math.random()-.5)*10,vy:(Math.random()-.5)*10,fl:0})}
 function boom(x,y,c,n,sp){for(let i=0;i<n;i++){const a=Math.random()*6.283,v=(.3+Math.random())*sp;M.fx.push({x,y,vx:Math.cos(a)*v,vy:Math.sin(a)*v,l:.5+Math.random()*.4,L:.9,c,s:2+Math.random()*3})}}
 function flt(x,y,t,c){M.fl.push({x,y,t,c,l:.9})}
-function kill(a){const s=ST(),L=sv.mine.lvl,n=3+(a.r/10|0);boom(a.x,a.y,RC[a.t==5?0:a.t==0?0:a.t],14,120);M.shk=Math.max(M.shk,a.r/60);
+function kill(a){sv.mine.q.ast++;const s=ST(),L=sv.mine.lvl,n=3+(a.r/10|0);boom(a.x,a.y,RC[a.t==5?0:a.t==0?0:a.t],14,120);M.shk=Math.max(M.shk,a.r/60);
  const ri=a.t==5?0:a.t;const val=Math.max(1,Math.ceil(a.r/9*(1+.15*L)*s.luck*(ri==0?3:ri==1?1.2:ri==2?.6:ri==3?.25:.12)));for(let i=0;i<n;i++){const ang=Math.random()*6.283;M.pk.push({x:a.x,y:a.y,vx:Math.cos(ang)*60,vy:Math.sin(ang)*60,t:ri,v:Math.max(1,Math.round(val/n)),l:30})}
  if(a.t==0&&Math.random()<.35)M.pk.push({x:a.x,y:a.y,vx:30,vy:-30,t:1,v:Math.ceil(val*.2),l:30});
  gainXP(a.mhp*.5)}
 function gainXP(v){const m=sv.mine;m.xp+=v;let need=40*Math.pow(1.6,m.lvl-1);while(m.xp>=need){m.xp-=need;m.lvl++;need=40*Math.pow(1.6,m.lvl-1);boom(M.x,M.y,'#ffd54a',30,220);flt(M.x,M.y-20,'LEVEL '+m.lvl+'!','#ffd54a');sfx('ding')}}
 function spawnRaider(){const a=Math.random()*6.283,d=Math.hypot(W,H)/Z*.6,L=sv.mine.lvl;M.en2.push({x:M.x+Math.cos(a)*d,y:M.y+Math.sin(a)*d,vx:0,vy:0,hp:14+7*L,mhp:14+7*L,fl:0,ang:0})}
 function update(dt){
- const s=ST(),m=sv.mine;M.t+=dt;M.shk*=Math.exp(-dt*4);
+ const s=ST(),m=sv.mine;M.t+=dt;for(const k in M.bt)if(M.bt[k]>0)M.bt[k]-=dt;M.shk*=Math.exp(-dt*4);
  // Steuerung
  let tx=null,ty=null;const k=M.keys;if(k.ArrowLeft||k.a||k.ArrowRight||k.d||k.ArrowUp||k.w||k.ArrowDown||k.s){tx=M.x+((k.ArrowRight||k.d?1:0)-(k.ArrowLeft||k.a?1:0))*200;ty=M.y+((k.ArrowDown||k.s?1:0)-(k.ArrowUp||k.w?1:0))*200}
  else if(M.ptr){tx=M.ptr.x;ty=M.ptr.y}
@@ -1009,23 +1016,23 @@ function update(dt){
  // Energie
  M.en=Math.min(s.emax,M.en+s.reg*dt*(M.en<s.emax*.2?.5:1));
  // Spawns
- const want=120+Math.min(100,m.lvl*3);for(let q=0;q<4&&M.ast.length<want;q++)spawnAst(true);
+ const want=70+Math.min(60,m.lvl*2);if(M.ast.length<want&&Math.random()<.6)spawnAst(true);
  const vr=Math.hypot(W,H)/Z*1.15;for(let i=M.ast.length-1;i>=0;i--){const a=M.ast[i];a.x+=a.vx*dt;a.y+=a.vy*dt;a.rot+=a.rv*dt;a.fl-=dt;if(Math.hypot(a.x-M.x,a.y-M.y)>vr*1.5)M.ast.splice(i,1)}
  if(m.lvl>=2&&M.en2.length<Math.min(10,1+m.lvl/3|0)&&Math.random()<.01)spawnRaider();
  // Laser
  M.tick-=dt;const tg=[];if(M.en>1){const cand=[];for(const a of M.ast){const d=Math.hypot(a.x-M.x,a.y-M.y);if(d<s.rng+a.r)cand.push([d-(a.t==2||a.t==3||a.t==4?60:0),a,0])}for(const e of M.en2){const d=Math.hypot(e.x-M.x,e.y-M.y);if(d<s.rng+10)cand.push([d-200,e,1])}cand.sort((p,q)=>p[0]-q[0]);for(let i=0;i<Math.min(s.tg,cand.length);i++)tg.push(cand[i])}
  M.tgt=tg;
- if(M.tick<=0&&tg.length){M.tick=.2;let n=0;for(const[,o,isE]of tg){let d=s.dmg*.2;if(Math.random()<s.crit){d*=3;flt(o.x,o.y-o.r-6||o.y-10,'CRIT','#ff9a3a')}o.hp-=d;o.fl=.08;M.en-=.5;n++;if(Math.random()<.5)M.fl.push({x:o.x+(Math.random()-.5)*20,y:o.y-(o.r||8)*.6,t:Math.max(1,d|0),c:'#fff',l:.6});boom(o.x,o.y,'#8ff4ff',1,60)}sfx('arrow',.25)}
+ if(M.tick<=0&&tg.length){M.tick=.2;let n=0;for(const[,o,isE]of tg){let d=s.dmg*.2;if(Math.random()<s.crit){d*=3;flt(o.x,o.y-o.r-6||o.y-10,'CRIT','#ff9a3a')}o.hp-=d;o.fl=.08;M.en-=s.free?0:.5;n++;if(s.aoe&&!isE){for(const q of M.ast)if(q!==o&&Math.hypot(q.x-o.x,q.y-o.y)<q.r+60){q.hp-=d*s.aoe;q.fl=.05}}if(Math.random()<.5)M.fl.push({x:o.x+(Math.random()-.5)*20,y:o.y-(o.r||8)*.6,t:Math.max(1,d|0),c:'#fff',l:.6});boom(o.x,o.y,'#8ff4ff',1,60)}sfx('arrow',.25)}
  // Drohnen
  const dn=s.dr;if(dn){for(let i=0;i<dn;i++){const a=M.t*(2+dn*.12)+i/dn*6.283,px=M.x+Math.cos(a)*70,py=M.y+Math.sin(a)*70;for(const o of M.ast)if(Math.hypot(o.x-px,o.y-py)<o.r+8){o.hp-=s.dmg*.5*dt*6;o.fl=.05;if(Math.random()<.2)boom(px,py,'#ff9a3a',1,40)}for(const e of M.en2)if(Math.hypot(e.x-px,e.y-py)<16)e.hp-=s.dmg*dt*3}}
  for(let i=M.ast.length-1;i>=0;i--)if(M.ast[i].hp<=0){kill(M.ast[i]);M.ast.splice(i,1)}
  // Raider
  for(let i=M.en2.length-1;i>=0;i--){const e=M.en2[i],dx=M.x-e.x,dy=M.y-e.y,d=Math.hypot(dx,dy)||1;e.vx+=dx/d*160*dt;e.vy+=dy/d*160*dt;const sp2=Math.hypot(e.vx,e.vy);if(sp2>110){e.vx*=110/sp2;e.vy*=110/sp2}e.x+=e.vx*dt;e.y+=e.vy*dt;e.ang=Math.atan2(e.vy,e.vx);e.fl-=dt;
   if(d<16){M.en=Math.max(0,M.en-18);boom(e.x,e.y,'#ff5a4a',16,150);M.shk=.6;M.en2.splice(i,1);continue}
-  if(e.hp<=0){boom(e.x,e.y,'#ff9a3a',20,170);for(let j=0;j<3;j++)M.pk.push({x:e.x,y:e.y,vx:(Math.random()-.5)*80,vy:(Math.random()-.5)*80,t:2,v:Math.ceil(2+m.lvl*.7*s.luck),l:30});gainXP(14+m.lvl*3);M.en2.splice(i,1)}}
+  if(e.hp<=0){boom(e.x,e.y,'#ff9a3a',20,170);for(let j=0;j<3;j++)M.pk.push({x:e.x,y:e.y,vx:(Math.random()-.5)*80,vy:(Math.random()-.5)*80,t:2,v:Math.ceil(2+m.lvl*.7*s.luck),l:30});gainXP(14+m.lvl*3);m.q.rd++;M.en2.splice(i,1)}}
  // Pickups
  for(let i=M.pk.length-1;i>=0;i--){const p=M.pk[i],dx=M.x-p.x,dy=M.y-p.y,d=Math.hypot(dx,dy)||1;p.l-=dt;if(d<s.mag){const f=(1-d/s.mag)*900+120;p.vx+=dx/d*f*dt;p.vy+=dy/d*f*dt}p.vx*=Math.exp(-dt*2.2);p.vy*=Math.exp(-dt*2.2);p.x+=p.vx*dt;p.y+=p.vy*dt;
-  if(d<14){m.r[p.t]+=p.v;flt(p.x,p.y-8,'+'+p.v,RC[p.t]);M.pk.splice(i,1);continue}if(p.l<=0)M.pk.splice(i,1)}
+  if(d<14){m.r[p.t]+=p.v;m.q['c'+p.t]+=p.v;flt(p.x,p.y-8,'+'+p.v,RC[p.t]);M.pk.splice(i,1);continue}if(p.l<=0)M.pk.splice(i,1)}
  for(let i=M.fx.length-1;i>=0;i--){const f=M.fx[i];f.l-=dt;f.x+=f.vx*dt;f.y+=f.vy*dt;f.vx*=Math.exp(-dt*2);f.vy*=Math.exp(-dt*2);if(f.l<=0)M.fx.splice(i,1)}
  for(let i=M.fl.length-1;i>=0;i--){const f=M.fl[i];f.l-=dt;f.y-=22*dt;if(f.l<=0)M.fl.splice(i,1)}}
 // ---- Zeichnen
@@ -1068,24 +1075,71 @@ let hudT=0;
 function hud(){const m=sv.mine,s=ST();$('#mres').innerHTML=RN.map((n,i)=>(i<3||m.r[i]>0||m.lvl>=[0,0,0,10,14][i])?`<div><img src="${IC[RI[i]]}"><span style="color:${RC[i]}">${fmt(m.r[i])}</span></div>`:'').join('');
  const need=40*Math.pow(1.6,m.lvl-1);const e=$('#mbar .e'),x=$('#mbar .x');e.firstChild.style.transform=`scaleX(${M.en/s.emax})`;e.lastChild.textContent='ENERGIE – '+Math.round(M.en/s.emax*100)+'%';x.firstChild.style.transform=`scaleX(${m.xp/need})`;x.lastChild.textContent='SCHIFF LV '+m.lvl+' – '+fmt(m.xp)+' / '+fmt(need);$('#mA').classList.toggle('on',!!m.auto)}
 // ---- Panels
+let selN=null;
 function panel(kind){const p=$('#mpan');if(!kind||p.dataset.k==kind&&p.style.display=='block'){p.style.display='none';return}p.dataset.k=kind;p.style.display='block';render(kind)}
-function render(kind){const p=$('#mpan'),m=sv.mine;if(kind=='up'){p.innerHTML='<h3>⬆ SCHIFF-UPGRADES</h3><div class="mg">'+MU.map(u=>{const c=ucost(u),mx=u[7]&&U(u[0])>=u[7],ok=!mx&&m.r[u[4]]>=c;return`<div class="mu ${ok?'ok':''}" data-u="${u[0]}"><img src="${IC[u[1]]}"><div><b>${u[2]}</b> <small>Stufe ${U(u[0])} · ${u[3]}</small><div class="c">${mx?'MAX':`<img src="${IC[RI[u[4]]]}">${fmt(c)} ${RN[u[4]]}`}</div></div></div>`}).join('')+'</div>';p.querySelectorAll('.mu').forEach(e=>e.onclick=()=>{const u=MU.find(q=>q[0]==e.dataset.u),c=ucost(u);if(u[7]&&U(u[0])>=u[7])return;if(m.r[u[4]]<c)return toast('Nicht genug '+RN[u[4]]);m.r[u[4]]-=c;m.up[u[0]]=U(u[0])+1;sfx('click');save();render('up')})}
- else{const L=S.l||1,gold=(m.r[0]*.01+m.r[1]*.04)*(1+L*.25),soul=m.r[2]*.004+m.r[3]*.08+m.r[4]*.25;p.innerHTML=`<h3>📦 FRACHT LIEFERN</h3><div class="mg"><div class="mu ok" id="dg"><img src="${IC.coin}"><div><b>Eisen + Kupfer → Gold</b><small>für den laufenden Durchgang</small><div class="c">+${fmt(gold)} Gold</div></div></div><div class="mu ok" id="ds"><img src="${IC.soul}"><div><b>Gold + Uran + Kristall → Seelen</b><small>dauerhaft</small><div class="c">+${Math.floor(soul)} Seelen</div></div></div></div><p style="font-weight:400;font-size:.85rem;opacity:.8">Spare Ressourcen für Upgrades oder liefere sie an die Burg – deine Entscheidung.</p>`;
-  $('#dg').onclick=()=>{if(gold<1)return toast('Zu wenig Fracht');S.gold+=Math.floor(gold);m.r[0]=0;m.r[1]=0;sfx('ding');toast('+'+fmt(gold)+' Gold geliefert');save();render('d')};
-  $('#ds').onclick=()=>{if(soul<1)return toast('Zu wenig Fracht');sv.souls+=Math.floor(soul);m.r[2]=0;m.r[3]=0;m.r[4]=0;sfx('ding');toast('+'+Math.floor(soul)+' Seelen geliefert');save();render('d')}}}
+const rname=i=>`<img src="${IC[RI[i]]}" style="height:1.1rem;vertical-align:middle"> `;
+function buyNode(n){const m=sv.mine,c=ncost(n);if(rank(n.id)>=n.max)return;if(nlock(n)||(n.hubreq&&!rank(n.hubreq)))return toast('Gesperrt – erst Vorgänger kaufen');if(m.r[n.res]<c)return toast('Nicht genug '+RN[n.res]);m.r[n.res]-=c;m.rk[n.id]=rank(n.id)+1;SC=null;sfx('click');save();hud();render('up')}
+function render(kind){const p=$('#mpan'),m=sv.mine;
+ if(kind=='up'){const CW=4.6,RH=5.8,cx=x=>(x+4)*CW+.4+1.75,cy=y=>y*RH+.4+1.75;let h=`<div id="mtree" style="width:${9*CW+1}rem;height:${5*RH}rem"><svg viewBox="0 0 ${9*CW+1} ${5*RH}" preserveAspectRatio="none">`;
+  for(const n of NODES)if(n.req){const q=NODES.find(z=>z.id==n.req),on=rank(n.req)>0;h+=`<line x1="${cx(q.x)}" y1="${cy(q.y)}" x2="${cx(n.x)}" y2="${cy(n.y)}" stroke="${on?'#ffe27a':'#1a2a55'}" stroke-width=".28" stroke-linecap="round"/>`}
+  h+='</svg>';
+  for(const n of NODES){const lk=nlock(n)||(n.hubreq&&!rank(n.hubreq)),mx=rank(n.id)>=n.max,can=!lk&&!mx&&m.r[n.res]>=ncost(n);h+=`<div class="mn ${n.hub?'hub':''} ${lk?'lk':''} ${mx?'mx':''} ${can?'can':''} ${selN==n.id?'sel':''}" data-id="${n.id}" style="left:${cx(n.x)-(n.hub?2:1.75)}rem;top:${cy(n.y)-(n.hub?2:1.75)}rem"><img src="${IC[n.icon]}"><span class="rk">${rank(n.id)}/${n.max}</span></div>`}
+  h+='</div>';const sn=NODES.find(z=>z.id==selN);
+  p.innerHTML='<h3>⬆ SCHIFF-UPGRADES</h3>'+h+`<div id="mnfo">${sn?`<div><b>${sn.name}</b> · ${sn.desc}${sn.stat?' (+'+(sn.stat=='drone'?sn.per:Math.round(sn.per*1000)/10+'%')+' pro Rang)':''}<br>Rang ${rank(sn.id)}/${sn.max}${rank(sn.id)<sn.max?` · Kosten: ${rname(sn.res)}${fmt(ncost(sn))} ${RN[sn.res]}`:' · MAX'}</div><button class="mbtn" id="mbuy">Kaufen</button>`:'<div>Tippe auf einen Knoten. Gelb = verfügbar, grau = gesperrt (erst Werkstatt und Vorgänger kaufen).</div>'}</div>`;
+  p.querySelectorAll('.mn').forEach(e=>e.onclick=()=>{selN=e.dataset.id;render('up')});const bb=$('#mbuy');if(bb)bb.onclick=()=>buyNode(sn);return}
+ if(kind=='q'){const QS=[['ast','Zerstöre %d Asteroiden',[50,300,1500,8000]],['rd','Zerstöre %d Raider',[10,60,300]],['c0','Sammle %d Eisen',[500,5000,50000]],['c2','Sammle %d Gold-Erz',[100,1000,10000]],['c3','Sammle %d Uran',[30,300]],['c4','Sammle %d Kristall',[20,200]],['del','Liefere %d-mal Fracht',[3,10,30]],['lvl','Erreiche Schiffslevel %d',[5,10,20,30]]];let h='<h3>📜 QUESTS</h3>';
+  for(const[k,t,tiers]of QS){for(let i=0;i<tiers.length;i++){const id=k+i;if(m.done[id])continue;const tv=tiers[i],cur=k=='lvl'?m.lvl:m.q[k],can=cur>=tv,rew=Math.ceil(tv*(k=='ast'?4:k=='rd'?12:k=='lvl'?60:1)*(1+i)),rs=Math.min(2,i+(k=='rd'||k=='lvl'?1:0)),souls=2+i*3;
+   h+=`<div class="qr"><div style="flex:1"><b>${t.replace('%d',fmt(tv))}</b><div class="pb"><i style="width:${Math.min(100,cur/tv*100)}%"></i></div><small>${fmt(Math.min(cur,tv))} / ${fmt(tv)}</small></div><div>${rname(rs)}${fmt(rew)} · 💧${souls}</div><button class="mbtn" data-q="${id}" data-r="${rs}" data-v="${rew}" data-s="${souls}" ${can?'':'disabled style="opacity:.4"'}>Abholen</button></div>`;break}}
+  p.innerHTML=h;p.querySelectorAll('button[data-q]').forEach(b=>b.onclick=()=>{if(b.disabled)return;m.done[b.dataset.q]=1;m.r[+b.dataset.r]+=+b.dataset.v;sv.souls+=+b.dataset.s;sfx('ding');toast('Quest: +'+fmt(+b.dataset.v)+' '+RN[+b.dataset.r]+', +'+b.dataset.s+' Seelen');save();render('q')});return}
+ if(kind=='b'){p.innerHTML='<h3>⏳ BOOSTER</h3>'+BOOST.map(b=>{const c=Math.ceil(b[4]*(1+.25*m.lvl)),act=M.bt[b[0]]>0;return`<div class="qr"><img src="${IC[RI[b[3]]]}" style="height:2.2rem"><div style="flex:1"><b>${b[1]}</b><br><small>${b[2]}</small></div><div>${rname(b[3])}${fmt(c)}</div><button class="mbtn" data-b="${b[0]}" data-c="${c}" data-r="${b[3]}" data-t="${b[5]}">${act?Math.ceil(M.bt[b[0]])+' s':'Aktivieren'}</button></div>`}).join('');
+  p.querySelectorAll('button[data-b]').forEach(b=>b.onclick=()=>{const c=+b.dataset.c,r=+b.dataset.r;if(M.bt[b.dataset.b]>0)return;if(m.r[r]<c)return toast('Nicht genug '+RN[r]);m.r[r]-=c;M.bt[b.dataset.b]=+b.dataset.t;sfx('horn',.5);render('b')});return}
+ const L=S.l||1,gold=(m.r[0]*.01+m.r[1]*.04)*(1+L*.25),soul=m.r[2]*.004+m.r[3]*.08+m.r[4]*.25;p.innerHTML=`<h3>📦 FRACHT AN DIE BURG LIEFERN</h3><div class="qr" id="dg" style="cursor:pointer"><img src="${IC.coin}" style="height:2.4rem"><div style="flex:1"><b>Eisen + Kupfer → Gold</b><br><small>für den laufenden Durchgang von „Here Comes the Horde"</small></div><div>+${fmt(gold)} Gold</div></div><div class="qr" id="ds" style="cursor:pointer"><img src="${IC.soul}" style="height:2.4rem"><div style="flex:1"><b>Gold + Uran + Kristall → Seelen</b><br><small>dauerhaft</small></div><div>+${Math.floor(soul)} Seelen</div></div>`;
+ $('#dg').onclick=()=>{if(gold<1)return toast('Zu wenig Fracht');S.gold+=Math.floor(gold);m.r[0]=0;m.r[1]=0;m.q.del++;sfx('ding');toast('+'+fmt(gold)+' Gold geliefert');save();render('d')};
+ $('#ds').onclick=()=>{if(soul<1)return toast('Zu wenig Fracht');sv.souls+=Math.floor(soul);m.r[2]=0;m.r[3]=0;m.r[4]=0;m.q.del++;sfx('ding');toast('+'+Math.floor(soul)+' Seelen geliefert');save();render('d')}}
 // ---- Steuerung / Loop
 function wpos(e){const r=mcv.getBoundingClientRect();return{x:M.x+(e.clientX-r.left-W/2)/Z,y:M.y+(e.clientY-r.top-H/2)/Z}}
 mcv.addEventListener('pointerdown',e=>{M.ptr=wpos(e);mcv.setPointerCapture(e.pointerId)});mcv.addEventListener('pointermove',e=>{if(M.ptr)M.ptr=wpos(e)});mcv.addEventListener('pointerup',()=>M.ptr=null);mcv.addEventListener('pointercancel',()=>M.ptr=null);
-addEventListener('keydown',e=>{if(!M.open)return;if(e.key=='Escape')closeMine();else M.keys[e.key.length==1?e.key.toLowerCase():e.key]=1});addEventListener('keyup',e=>{delete M.keys[e.key.length==1?e.key.toLowerCase():e.key]});
+addEventListener('keydown',e=>{if(!M.open)return;if(e.key=='Escape')window.showLauncher();else M.keys[e.key.length==1?e.key.toLowerCase():e.key]=1});addEventListener('keyup',e=>{delete M.keys[e.key.length==1?e.key.toLowerCase():e.key]});
 let raf=0;function loop(now){if(!M.open)return;const dt=Math.min(.05,(now-M.last)/1000);M.last=now;update(dt);draw();hudT-=dt;if(hudT<=0){hudT=.12;hud()}raf=requestAnimationFrame(loop)}
-function openMine(){if(M.open)return;M.open=1;window.mineOpen=1;root.style.display='block';rs();M.en=ST().emax;if(!M.ast.length)for(let i=0;i<150;i++)spawnAst(false);M.last=performance.now();hud();raf=requestAnimationFrame(loop)}
+function openMine(){if(M.open)return;M.open=1;window.mineOpen=1;root.style.display='block';rs();M.en=ST().emax;if(!M.ast.length)for(let i=0;i<90;i++)spawnAst(false);M.last=performance.now();hud();raf=requestAnimationFrame(loop)}
 function closeMine(){M.open=0;window.mineOpen=0;root.style.display='none';$('#mpan').style.display='none';cancelAnimationFrame(raf);save()}
-window.openMine=openMine;
-$('#mx').onclick=closeMine;$('#mU').onclick=()=>panel('up');$('#mD').onclick=()=>panel('d');$('#mA').onclick=()=>{sv.mine.auto^=1;hud()};
+window.openMine=openMine;window.closeMine=closeMine;
+$('#mx').onclick=()=>window.showLauncher();$('#mU').onclick=()=>panel('up');$('#mQ').onclick=()=>panel('q');$('#mB').onclick=()=>panel('b');$('#mD').onclick=()=>panel('d');$('#mA').onclick=()=>{sv.mine.auto^=1;hud()};
 addEventListener('resize',()=>{if(M.open)rs()});
-const bm=document.createElement('button');bm.className='btn';bm.id='bMine';bm.title='Minigame: Asteroiden-Bergbau (M)';bm.innerHTML=`<img class="ico" src="${IC.m_ship}">`;bm.onclick=openMine;$('#ctl').insertBefore(bm,$('#ctl').firstChild);
-addEventListener('keydown',e=>{if(e.key.toLowerCase()=='m'&&!M.open&&$('#menu').style.display!='flex')openMine()});
-window.__m={M,update,draw,ST,sv};
+window.__m={M,update,draw,ST,sv,NODES,buyNode,render};
 })();
 </script>
+
+<script>
+// ===================== Spielauswahl =====================
+(function(){
+const st=document.createElement('style');st.textContent=`
+#launch{position:fixed;inset:0;z-index:30;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1.4rem;background:radial-gradient(ellipse at 50% 30%,#1c2a5a,#080a1a 70%);color:#fff;font-family:'Helvetica Neue',Arial,sans-serif;overflow:auto;padding:1rem}
+#launch .lstars{position:absolute;inset:0;background-image:radial-gradient(#fff 1px,transparent 1.5px),radial-gradient(#9fc8ff 1px,transparent 1.5px);background-size:90px 90px,140px 140px;background-position:0 0,40px 60px;opacity:.5;animation:lst 60s linear infinite;pointer-events:none}
+@keyframes lst{to{background-position:-900px 0,-860px 60px}}
+#launch h1{position:relative;margin:0;font-size:2.2rem;letter-spacing:.35rem;text-shadow:0 0 1.2rem #5fa8ff}
+.lcards{position:relative;display:flex;gap:1.4rem;flex-wrap:wrap;justify-content:center}
+.lcard{width:min(22rem,86vw);padding:1.2rem 1.2rem 1rem;border:.2rem solid #fff;border-radius:1rem;color:#fff;cursor:pointer;text-align:center;font:inherit;transition:transform .15s,box-shadow .2s;position:relative}
+.lcard:hover{transform:translateY(-.4rem) scale(1.02)}
+.lcard[data-g=horde]{background:linear-gradient(160deg,#f4f6fb,#c8d2e8);color:#111;box-shadow:0 0 0 .15rem #111,0 1rem 2rem #0008}
+.lcard[data-g=miner]{background:linear-gradient(160deg,#241a4a,#0a0a1c);box-shadow:0 0 0 .15rem #5fa8ff,0 1rem 2rem #0008,0 0 2rem #5a3ae855}
+.lcard h2{margin:.6rem 0 .3rem;font-size:1.35rem}.lcard p{margin:0 0 .8rem;font-size:.95rem;opacity:.9;min-height:3.4rem}
+.lart{height:7.5rem;display:flex;align-items:center;justify-content:center;gap:.3rem}.lart img{height:5.6rem;animation:lfl 3s ease-in-out infinite;filter:drop-shadow(0 .4rem .4rem #0006)}.lart img:nth-child(2){animation-delay:-1s;height:4.4rem}.lart img:nth-child(3){animation-delay:-2s;height:3.8rem}
+@keyframes lfl{50%{transform:translateY(-.5rem) rotate(2deg)}}
+.lgo{display:inline-block;padding:.35rem 1.4rem;border:.15rem solid currentColor;border-radius:2rem;font-weight:700}
+.lbadge{position:absolute;top:-.8rem;right:1rem;background:#ffd54a;color:#111;font-size:.75rem;font-weight:800;padding:.15rem .6rem;border-radius:1rem}
+#launch small{position:relative;opacity:.7}
+`;document.head.appendChild(st);
+const L=document.createElement('div');L.id='launch';
+L.innerHTML=`<div class="lstars"></div><h1>SPIELAUSWAHL</h1><div class="lcards"><button class="lcard" data-g="horde"><div class="lart"><img src="${IC.b2}"><img src="${IC.war}"><img src="${IC.coin}"></div><h2>Here Comes the Horde</h2><p>Idle-Auto-Battler: Armeen aufbauen, Wellen überstehen, Talente freischalten und aufsteigen.</p><span class="lgo">Spielen ▶</span></button><button class="lcard" data-g="miner"><div class="lart"><img src="${IC.m_ship}"><img src="${IC.m_crys}"><img src="${IC.m_gold}"></div><h2>Asteroid Miner</h2><p>Incremental-Weltraumbergbau: Asteroiden abbauen, Schiff und Drohnen verbessern, Quests und Booster.</p><span class="lgo">Spielen ▶</span></button></div><small>Beide Spiele sind verbunden: Fracht aus dem Asteroidenfeld hilft der Burg.</small>`;
+document.body.appendChild(L);window.launchOpen=1;
+function mark(){L.querySelectorAll('.lbadge').forEach(e=>e.remove());const c=L.querySelector(`.lcard[data-g=${sv.lastGame||'horde'}]`);if(c&&sv.lastGame){const b=document.createElement('span');b.className='lbadge';b.textContent='Zuletzt gespielt';c.appendChild(b)}}
+window.showLauncher=()=>{if(window.closeMine)closeMine();L.style.display='flex';window.launchOpen=1;mark()};
+function pick(g){sv.lastGame=g;save();L.style.display='none';window.launchOpen=0;if(g=='miner')openMine();else if(window.closeMine)closeMine()}
+L.querySelectorAll('.lcard').forEach(b=>b.onclick=()=>{sfx('click');pick(b.dataset.g)});
+const bh=document.createElement('button');bh.className='btn';bh.id='bHome';bh.title='Spielauswahl';bh.textContent='🏠';bh.onclick=()=>window.showLauncher();$('#ctl').insertBefore(bh,$('#ctl').firstChild);
+mark();
+})();
+</script>
+
 </body></html>
