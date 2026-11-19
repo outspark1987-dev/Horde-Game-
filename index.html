@@ -38,7 +38,7 @@ canvas#cv{position:absolute;inset:0;width:100%;height:100%;display:block}
 #ctl .btn{padding:.25rem .6rem;font-size:1rem}
 #toast{position:absolute;top:18%;left:50%;transform:translateX(-50%);background:#0009;padding:.5rem 1rem;border-radius:.6rem;font-size:1.1rem;opacity:0;transition:opacity .4s;pointer-events:none;z-index:4;text-align:center}
 #menu,#over{position:fixed;inset:0;z-index:10;display:none;flex-direction:column;align-items:center}
-#menu{background:repeating-linear-gradient(0deg,#0000 0 2.7rem,#27478a66 2.7rem 2.9rem),repeating-linear-gradient(90deg,#0000 0 5.4rem,#27478a44 5.4rem 5.55rem),linear-gradient(#4f7bcc,#3a63b2)}
+#menu{z-index:11!important;background:repeating-linear-gradient(0deg,#0000 0 2.7rem,#27478a66 2.7rem 2.9rem),repeating-linear-gradient(90deg,#0000 0 5.4rem,#27478a44 5.4rem 5.55rem),linear-gradient(#4f7bcc,#3a63b2)}
 #over{background:#000a;justify-content:center;gap:1rem;font-size:1.6rem;text-align:center}
 #top{margin:.7rem;flex:none}
 #top .pill{min-width:12rem;font-size:1.5rem;padding:.2rem 1.5rem;background:#1e3f84}
@@ -71,16 +71,16 @@ canvas#cv{position:absolute;inset:0;width:100%;height:100%;display:block}
  <button class="btn" id="bMenu">Menü</button>
 </div>
 <div id="main"><canvas id="cv"></canvas>
- <div id="ctl"><button class="btn" id="bPause">⏸</button><button class="btn" id="bSpd">1x</button></div>
+ <div id="ctl"><button class="btn" id="bTal">🌳 Talente</button><button class="btn" id="bPause">⏸</button><button class="btn" id="bSpd">1x</button></div>
  <div id="toast"></div>
  <div id="tools"></div>
 </div></div>
 <div id="menu">
- <div id="top"><div class="pill" id="msouls"></div></div>
+ <div id="top"><div class="pill" id="msouls"></div><div style="text-align:center;font-size:.9rem;margin-top:.3rem;opacity:.9">Talentbaum – tippe auf ein Talent und kaufe es mit Seelen</div></div>
  <div id="tw"><div id="tree"></div></div>
  <div id="bot"><button class="btn" id="mBack">Zurück zum Spiel</button><button class="btn" id="mRestart">Neustart</button><button class="btn" id="mWipe">Spielstand löschen</button></div>
 </div>
-<div id="over"><div id="otxt"></div><button class="btn" id="oBtn">Neuer Versuch</button></div>
+<div id="over"><div id="otxt"></div><button class="btn" id="oTal">🌳 Talentbaum</button><button class="btn" id="oBtn">Neuer Versuch</button></div>
 <div id="tip"></div>
 <script>
 const $=s=>document.querySelector(s),R=Math.random,nf=n=>Math.floor(n).toLocaleString('de-DE');
@@ -121,23 +121,31 @@ function drawUnit(c,k,f){
  if(k==7){tri(c,[14,13,7,29,21,29],'#3f7a3f');circ(c,14,12,5,'#9bc07a');tri(c,[7,11,14,-3,21,11],'#2f5f33');circ(c,12,12,1,'#ff3');circ(c,16,12,1,'#ff3');ln(c,23,29,23,8,'#4a3524',1.3);circ(c,23,7,2.8,'#c35bff');circ(c,23,7,1.2,'#fff')}
  if(k==8){c.fillStyle='#0f0f14';tri(c,[14,4,2,31,26,31],'#0f0f14');circ(c,14,10,6.5,'#0f0f14');circ(c,12,10,1.3,'#f22');circ(c,17,10,1.3,'#f22');ln(c,24,32,24,3,'#4a3524',1.4);c.strokeStyle='#c8ccd8';c.lineWidth=1.6;c.beginPath();c.arc(20,5,5,-3.1,.3);c.stroke()}
  c.translate(0,-b)}
+function outline(c){const w=c.width,h=c.height,o=mk(w,h),x=o.getContext('2d'),t=mk(w,h),tx=t.getContext('2d');for(const[dx,dy]of[[2,0],[-2,0],[0,2],[0,-2],[1.4,1.4],[-1.4,-1.4],[1.4,-1.4],[-1.4,1.4]])tx.drawImage(c,dx,dy);tx.globalCompositeOperation='source-in';tx.fillStyle='#15151f';tx.fillRect(0,0,w,h);x.drawImage(t,0,0);x.drawImage(c,0,0);return o}
 const SP=[];
-for(let k=0;k<9;k++){SP[k]=[];for(let f=0;f<2;f++){const c=mk(56,68),x=c.getContext('2d');x.scale(2,2);if(k>=4){x.translate(28,0);x.scale(-1,1)}drawUnit(x,k,f);SP[k][f]=c}}
+for(let k=0;k<9;k++){SP[k]=[];for(let f=0;f<2;f++){const c=mk(56,68),x=c.getContext('2d');x.scale(2,2);if(k>=4){x.translate(28,0);x.scale(-1,1)}drawUnit(x,k,f);SP[k][f]=outline(c)}}
 function bIcon(k){const c=mk(96,84),x=c.getContext('2d');x.fillStyle='#0004';x.beginPath();x.ellipse(48,74,38,7,0,0,7);x.fill();
  if(k==0){x.fillStyle='#e8d8b0';x.fillRect(16,40,56,30);x.fillStyle='#6b4a2a';x.fillRect(36,50,16,20);tri(x,[6,44,44,10,82,44],'#e0702a');for(let i=0;i<4;i++)ln(x,14+i*8,40-i*3,22+i*9,22+i*3,'#f09050',3);circ(x,80,62,8,'#e8c040');circ(x,86,52,7,'#f0d060')}
  if(k==1){x.fillStyle='#b58a55';x.fillRect(14,40,56,30);x.fillStyle='#5a3a1a';x.fillRect(30,50,16,20);tri(x,[4,44,42,10,80,44],'#2f6fc0');ln(x,76,70,76,40,'#6b4a2a',3);circ(x,76,40,11,'#fff');circ(x,76,40,8,'#d33');circ(x,76,40,4.5,'#fff');circ(x,76,40,2,'#d33')}
  if(k==2){x.fillStyle='#aab2bf';x.fillRect(12,30,72,40);for(let i=0;i<5;i++)x.fillRect(12+i*15,24,9,8);x.fillStyle='#8a929f';x.fillRect(12,44,72,3);x.fillStyle='#2a2f3a';x.beginPath();x.arc(48,70,12,Math.PI,0);x.fill();ln(x,48,24,48,4,'#444',2);tri(x,[48,4,66,10,48,16],'#2f5fa8')}
  if(k==3){x.fillStyle='#7a5aa8';x.fillRect(32,28,32,42);tri(x,[24,30,48,0,72,30],'#4b2f86');x.fillStyle='#ffd24a';x.fillRect(42,40,12,14);x.fillStyle='#5a3f88';x.fillRect(32,60,32,10);circ(x,48,10,3,'#ffd24a');circ(x,20,60,5,'#6ff0ff')}
- return c.toDataURL()}
+ return outline(c).toDataURL()}
 const BI=[0,1,2,3].map(bIcon);
 // ---------- Boden ----------
 const GR=1.5,GC=mk(2600*GR,WH*GR),DC=mk(2600*GR,WH*GR),gx=GC.getContext('2d'),dc=DC.getContext('2d');
 const THEMES=[['#dfe6ee','#cdd7e4','#a8bcb0'],['#80b055','#6f9e47','#4f8a35'],['#d9c088','#c9ad70','#a88b4a'],['#6c6168','#5c5258','#8a7a6e']];
+function tree(x,y,t){const s=.8+R()*.6;gx.save();gx.translate(x,y);gx.scale(s,s);gx.fillStyle='#0003';gx.beginPath();gx.ellipse(0,2,14,4,0,0,7);gx.fill();
+ if(t==0){ln(gx,0,2,0,-8,'#5a4030',4);tri(gx,[-13,-4,0,-30,13,-4],'#3f7358');tri(gx,[-10,-16,0,-40,10,-16],'#4d8a68');tri(gx,[-6,-30,0,-40,6,-30],'#eef3f8')}
+ else if(t==1){ln(gx,0,2,0,-12,'#5a3a20',5);circ(gx,0,-20,14,'#2f6f2a');circ(gx,-7,-15,9,'#3d8434');circ(gx,6,-24,9,'#4a9a3e')}
+ else if(t==2){ln(gx,0,2,0,-22,'#8a6a3a',4);circ(gx,0,-26,10,'#9aa244');circ(gx,-8,-20,7,'#7f8a35')}
+ else{ln(gx,0,2,0,-24,'#2c2428',4);ln(gx,0,-14,-9,-26,'#2c2428',2.5);ln(gx,0,-18,8,-30,'#2c2428',2.5)}gx.restore()}
 let theme=-1;
 function genGround(t){theme=t;const th=THEMES[t];gx.setTransform(GR,0,0,GR,0,0);gx.fillStyle=th[0];gx.fillRect(0,0,2600,WH);
  for(let i=0;i<500;i++){gx.fillStyle=th[1];gx.globalAlpha=.5;gx.beginPath();gx.ellipse(R()*2600,R()*WH,20+R()*60,8+R()*22,0,0,7);gx.fill()}
  gx.globalAlpha=1;for(let i=0;i<900;i++){const x=R()*2600,y=R()*WH;ln(gx,x,y,x-2,y-5,th[2],1.3);ln(gx,x,y,x+2,y-4,th[2],1.3)}
  for(let i=0;i<120;i++)circ(gx,R()*2600,R()*WH,1+R()*3,'#0002');
+ for(let i=0;i<150;i++){const y=R()<.5?8+R()*42:WH-28+R()*24;tree(R()*2600,y,t)}
+ for(let i=0;i<70;i++){const x=R()*2600,y=60+R()*(WH-120);circ(gx,x,y,3+R()*4,'#0003');circ(gx,x-1,y-1.5,2.5+R()*3,t==3?'#7b6f77':'#9aa2ad')}
  let g=gx.createLinearGradient(0,0,0,WH);g.addColorStop(0,'#0005');g.addColorStop(.1,'#0000');g.addColorStop(.9,'#0000');g.addColorStop(1,'#0005');gx.fillStyle=g;gx.fillRect(0,0,2600,WH);
  dc.setTransform(1,0,0,1,0,0);dc.clearRect(0,0,DC.width,DC.height)}
 // ---------- Zustand ----------
@@ -212,13 +220,16 @@ function update(dt){
 function defeat(){S.over=1;S.c=0;const g=Math.floor(S.l*2*(1+.15*T('soul')));sv.souls+=g;save();$('#otxt').innerHTML='Die Burg ist gefallen!<br>Erreichtes Level: '+S.l+'<br>Seelen-Bonus: +'+g+' 💧';$('#over').style.display='flex'}
 // ---------- Rendering ----------
 function resize(){const r=cv.getBoundingClientRect(),d=Math.min(devicePixelRatio||1,2);cv.width=r.width*d;cv.height=r.height*d;SC=cv.height/WH;WW=Math.min(2600,Math.max(450,cv.width/SC));GW=Math.ceil(WW/CS)+2;GH=Math.ceil(WH/CS)+2;hP=new Int32Array(GW*GH);hE=new Int32Array(GW*GH)}
+const BK=Array.from({length:40},()=>[]);
 function draw(){
  ctx.setTransform(SC,0,0,SC,0,0);ctx.drawImage(GC,0,0,WW*GR,WH*GR,0,0,WW,WH);ctx.drawImage(DC,0,0,WW*GR,WH*GR,0,0,WW,WH);
  // Burg
  ctx.fillStyle='#8a93a3';ctx.fillRect(0,0,CAST-6,WH);ctx.fillStyle='#6d7686';for(let y=0;y<WH;y+=40){ctx.fillRect(0,y,CAST-6,3);ctx.fillRect(10+(y/40%2)*14,y,3,40)}
  ctx.fillStyle='#aab2c0';for(let y=10;y<WH;y+=44)ctx.fillRect(CAST-20,y,18,26);ctx.fillStyle='#2a2f3a';ctx.fillRect(CAST-6,0,6,WH);
+ for(let y=70;y<WH;y+=160){ctx.fillStyle='#2f5fa8';ctx.fillRect(14,y,18,38);tri(ctx,[14,y+38,23,y+48,32,y+38],'#2f5fa8');circ(ctx,23,y+14,5,'#ffd24a');ctx.fillStyle='#4a3524';ctx.fillRect(CAST-24,y+70,18,34);circ(ctx,CAST-15,y+70,9,'#4a3524')}
  ctx.fillStyle='#0008';ctx.fillRect(4,6,CAST-18,8);ctx.fillStyle=S.c/castMax()>.3?'#4c4':'#d44';ctx.fillRect(5,7,(CAST-20)*Math.max(0,S.c)/castMax(),6);
- for(const A of[P,E])for(let i=0;i<A.length;i++){const u=A[i],s=SP[u.k][(u.ph|0)&1],w=u.sz*1.3,h=w*34/28,o=u.at>0?(u.t?-3:3):0;ctx.drawImage(s,u.x+o-w/2,u.y-h*.9,w,h)}
+ for(const b of BK)b.length=0;for(const A of[P,E])for(let i=0;i<A.length;i++){const u=A[i];BK[Math.min(39,u.y/20|0)].push(u)}
+ for(const b of BK)for(const u of b){const s=SP[u.k][(u.ph|0)&1],w=u.sz*1.5,h=w*34/28,o=u.at>0?(u.t?-3:3):0;ctx.drawImage(s,u.x+o-w/2,u.y-h*.9,w,h);if(u.sz>=19&&u.hp<u.mhp){ctx.fillStyle='#000a';ctx.fillRect(u.x-9,u.y-h*.95,18,3);ctx.fillStyle=u.t?'#d44':'#4c4';ctx.fillRect(u.x-8.5,u.y-h*.95+.5,17*u.hp/u.mhp,2)}}
  ctx.lineWidth=1.4;for(const p of pr){if(p.k==0){ctx.strokeStyle='#efe8c8';ctx.beginPath();const dx=p.x-p.px,dy=p.y-p.py,l=Math.hypot(dx,dy)||1;ctx.moveTo(p.x,p.y);ctx.lineTo(p.x-dx/l*9,p.y-dy/l*9);ctx.stroke()}
   else{const c=p.tm?'#b45cff':'#6f6';ctx.globalAlpha=.35;circ(ctx,p.x,p.y,6,c);ctx.globalAlpha=1;circ(ctx,p.x,p.y,3,c);circ(ctx,p.x,p.y,1.3,'#fff')}}
  for(const p of pt){ctx.globalAlpha=Math.min(1,p.l*4);ctx.fillStyle=p.c;ctx.fillRect(p.x-1.2,p.y-1.2,2.4,2.4)}ctx.globalAlpha=1}
@@ -283,13 +294,13 @@ $('#tree').addEventListener('pointerout',e=>{if(e.pointerType=='mouse')$('#tip')
 $('#tree').addEventListener('click',e=>{const el=e.target.closest('.tn');if(!el)return;const id=el.dataset.id;if(e.pointerType=='mouse'||e.detail==0||tsel==id){tbuy(id)}else{tsel=id;tip(el)}});
 function openMenu(){paused=true;$('#menu').style.display='flex';tsel=null;buildTree()}
 function closeMenu(){$('#menu').style.display='none';$('#tip').style.display='none';paused=false;$('#bPause').textContent='⏸';refresh()}
-$('#bMenu').onclick=openMenu;$('#mBack').onclick=closeMenu;
+$('#bMenu').onclick=openMenu;$('#bTal').onclick=openMenu;$('#oTal').onclick=openMenu;$('#mBack').onclick=closeMenu;
 $('#mRestart').onclick=()=>{if(confirm('Aktuellen Durchgang neu starten?')){newRun();closeMenu()}};
 $('#mWipe').onclick=()=>{if(confirm('Gesamten Spielstand löschen?')){localStorage.removeItem(SAVE);sv={t:{},souls:0,best:1,spd:1,run:null};newRun();buildTree()}};
 $('#oBtn').onclick=()=>{newRun()};
 $('#bPause').onclick=()=>{paused=!paused;$('#bPause').textContent=paused?'▶':'⏸'};
 const SPD=[1,2,4,8];$('#bSpd').onclick=()=>{sv.spd=SPD[(SPD.indexOf(sv.spd)+1)%4];$('#bSpd').textContent=sv.spd+'x'};
-addEventListener('keydown',e=>{if($('#menu').style.display=='flex')return;const k=e.key.toLowerCase();if(k=='f')hammer();else if('1234'.includes(k)&&k)buy(+k-1);else if(k==' '){e.preventDefault();$('#bPause').click()}});
+addEventListener('keydown',e=>{if($('#menu').style.display=='flex'){if(e.key=='Escape'||e.key.toLowerCase()=='t')closeMenu();return}const k=e.key.toLowerCase();if(k=='t')openMenu();else if(k=='f')hammer();else if('1234'.includes(k)&&k)buy(+k-1);else if(k==' '){e.preventDefault();$('#bPause').click()}});
 // ---------- Speichern ----------
 function save(){try{sv.run=S.over?null:{l:S.l,t:S.t,gold:S.gold,c:S.c,b:S.b};localStorage.setItem(SAVE,JSON.stringify(sv))}catch(e){}}
 setInterval(save,4000);addEventListener('beforeunload',save);document.addEventListener('visibilitychange',save);
@@ -304,5 +315,5 @@ function loop(now){let dt=Math.min(.05,(now-last)/1000);last=now;
  draw();rt-=dt;if(rt<=0){rt=.15;refresh()}prog();requestAnimationFrame(loop)}
 requestAnimationFrame(loop);
 setTimeout(()=>toast('Kaufe Gebäude unten (1–4) und verbessere sie links!'),500);
-window.__g={get S(){return S},sv,update,hammer,buy,get P(){return P},get E(){return E},refresh};
+window.__g={defeat,get S(){return S},sv,update,hammer,buy,get P(){return P},get E(){return E},refresh};
 </script></body></html>
