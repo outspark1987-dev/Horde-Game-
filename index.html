@@ -42,6 +42,8 @@ canvas#cv{position:absolute;inset:0;width:100%;height:100%;display:block}
 #bless{position:absolute;inset:0;z-index:6;display:none;flex-direction:column;align-items:center;justify-content:center;background:#000a;gap:1rem}#bless h3{margin:0;font-size:1.6rem}#bless div{display:flex;gap:.8rem;flex-wrap:wrap;justify-content:center}.bc{display:flex;flex-direction:column;gap:.3rem;width:13rem;padding:.8rem!important}.bc span{font-size:.85rem;font-weight:normal}
 #nxt{text-align:center;font-size:.8rem;opacity:.9;flex:none}
 #toast{position:absolute;top:18%;left:50%;transform:translateX(-50%);background:#0009;padding:.5rem 1rem;border-radius:.6rem;font-size:1.1rem;opacity:0;transition:opacity .4s;pointer-events:none;z-index:4;text-align:center}
+#win{position:fixed;inset:0;z-index:12;display:none;flex-direction:column;align-items:center;justify-content:center;gap:1rem;background:#000b;font-size:1.5rem;text-align:center}
+#rel{display:none;max-width:46rem;padding:.6rem 1rem;background:#1c3263;border:.15rem solid #a9c0ee;border-radius:.5rem;font-size:.9rem;margin:0 .7rem;grid-template-columns:repeat(auto-fill,minmax(13rem,1fr));gap:.4rem}
 #menu,#over{position:fixed;inset:0;z-index:10;display:none;flex-direction:column;align-items:center}
 #menu{z-index:11!important;background:repeating-linear-gradient(0deg,#0000 0 2.7rem,#27478a66 2.7rem 2.9rem),repeating-linear-gradient(90deg,#0000 0 5.4rem,#27478a44 5.4rem 5.55rem),linear-gradient(#4f7bcc,#3a63b2)}
 #over{background:#000a;justify-content:center;gap:1rem;font-size:1.6rem;text-align:center}
@@ -83,22 +85,24 @@ canvas#cv{position:absolute;inset:0;width:100%;height:100%;display:block}
 <div id="menu">
  <div id="top"><div class="pill" id="msouls"></div><div style="text-align:center;font-size:.9rem;margin-top:.3rem;opacity:.9">Talentbaum – tippe auf ein Talent und kaufe es mit Seelen</div></div>
  <div id="tw"><div id="tree"></div></div>
- <div id="help" style="display:none;max-width:44rem;padding:.6rem 1rem;background:#1c3263;border:.15rem solid #a9c0ee;border-radius:.5rem;font-size:.9rem;line-height:1.35;margin:0 .7rem">🚩 <b>Tippe aufs Schlachtfeld</b>, um den Sammelpunkt zu setzen. Neue Einheiten sammeln sich dort: Tanks vorn, Schützen dahinter, Priester & Katapulte hinten.<br>🤖/🛡/⚔/↩ (Z X C V): Auto, Halten, Angriff, Rückzug. &nbsp; ⚡ Kriegsruf (Q), ☄ Meteor (W, Talent).<br><b>Konter:</b> Speerträger → Wölfe, Reiter → Zauberer, Katapulte → Trolle/Boss, Magier → Skelette. Wölfe jagen Fernkämpfer!<br>Alle 5 Level wählst du einen <b>Segen</b> für den laufenden Durchgang. Aufstieg = Prestige mit dauerhaftem Ruhm.</div>
-<div id="bot"><button class="btn" id="mBack">Zurück zum Spiel</button><button class="btn" id="mRestart">Neustart</button><button class="btn" id="mAsc">⭐ Aufstieg</button><button class="btn" id="mSnd">🔊 Ton</button><button class="btn" id="mShk">📳 Schütteln</button><button class="btn" id="mHelp">❓ Hilfe</button><button class="btn" id="mExp">💾 Export</button><button class="btn" id="mImp">📥 Import</button><button class="btn" id="mWipe">Spielstand löschen</button></div>
+ <div id="rel"></div>
+<div id="help" style="display:none;max-width:44rem;padding:.6rem 1rem;background:#1c3263;border:.15rem solid #a9c0ee;border-radius:.5rem;font-size:.9rem;line-height:1.35;margin:0 .7rem">🚩 <b>Tippe aufs Schlachtfeld</b>, um den Sammelpunkt zu setzen. Neue Einheiten sammeln sich dort: Tanks vorn, Schützen dahinter, Priester & Katapulte hinten.<br>🤖/🛡/⚔/↩ (Z X C V): Auto, Halten, Angriff, Rückzug. &nbsp; ⚡ Kriegsruf (Q), ☄ Meteor (W, Talent).<br><b>Konter:</b> Speerträger → Wölfe, Reiter → Zauberer, Katapulte → Trolle/Boss, Magier → Skelette. Wölfe jagen Fernkämpfer!<br>Alle 5 Level wählst du einen <b>Segen</b> für den laufenden Durchgang. Aufstieg = Prestige mit dauerhaftem Ruhm.</div>
+<div id="bot"><button class="btn" id="mBack">Zurück zum Spiel</button><button class="btn" id="mRestart">Neustart</button><button class="btn" id="mAsc">⭐ Aufstieg</button><button class="btn" id="mAct">🗺 Akt</button><button class="btn" id="mRel">🏺 Relikte</button><button class="btn" id="mSnd">🔊 Ton</button><button class="btn" id="mShk">📳 Schütteln</button><button class="btn" id="mHelp">❓ Hilfe</button><button class="btn" id="mExp">💾 Export</button><button class="btn" id="mImp">📥 Import</button><button class="btn" id="mWipe">Spielstand löschen</button></div>
 </div>
+<div id="win"><div id="wtxt"></div><div style="display:flex;gap:.7rem;flex-wrap:wrap;justify-content:center"><button class="btn" id="wEnd">♾ Endlos weiterkämpfen</button><button class="btn" id="wNext">➡ Nächster Akt</button></div></div>
 <div id="over"><div id="otxt"></div><button class="btn" id="oTal">🌳 Talentbaum</button><button class="btn" id="oBtn">Neuer Versuch</button></div>
 <div id="tip"></div>
 <script>
 const $=s=>document.querySelector(s),R=Math.random,nf=n=>Math.floor(n).toLocaleString('de-DE');
-let sv0=0;const WH=800,LY0=70,LY1=WH-45,CAST=58,D=45,CS=32,CAP=[2600,4800],CF=1.6,SAVE='hch_save_v1';
+let sv0=0;const WH=800,LY0=70,LY1=WH-45,CAST=58,D=60,CS=32,CAP=[2600,4800],CF=1.6,SAVE='hch_save_v1';
 let WW=1600;
 let sv={t:{},souls:0,best:1,spd:1,run:null,glory:0,asc:0};
 try{let o=null;try{o=JSON.parse(localStorage.getItem(SAVE))}catch(e){}if(!o||typeof o!='object'){try{o=JSON.parse(localStorage.getItem(SAVE+'_bak'))}catch(e){}}if(o&&typeof o=='object'&&(o.ver||1)<=2)sv=Object.assign(sv,o)}catch(e){}
-sv.ver=2;sv.opt=Object.assign({sound:1,shake:1,flash:1},sv.opt);sv.stance=sv.stance|0;sv.rally=sv.rally||.34;
+sv.act=sv.act|0;sv.actMax=sv.actMax|0;sv.rel=sv.rel||{};sv.wins=sv.wins|0;sv.ver=2;sv.opt=Object.assign({sound:1,shake:1,flash:1},sv.opt);sv.stance=sv.stance|0;sv.rally=sv.rally||.34;
 const T=id=>sv.t[id]|0;
 // ---------- Definitionen ----------
-const BT=[{n:'Hütte',u:0,base:20,cyc:4,cnt:l=>l+T('hut')},{n:'Schießstand',u:1,base:45,cyc:5,cnt:l=>l+T('arch')},{n:'Kaserne',u:2,base:150,cyc:8,cnt:l=>Math.ceil(l/2)+T('barr')},{n:'Magierturm',u:3,base:300,cyc:9,cnt:l=>Math.ceil(l/3),req:'mage'},
-{n:'Speerhalle',u:9,base:90,cyc:6,cnt:l=>l,req:'spear'},{n:'Stall',u:10,base:260,cyc:9,cnt:l=>Math.ceil(l/2),req:'cav'},{n:'Kapelle',u:11,base:320,cyc:12,cnt:l=>Math.ceil(l/3),req:'priest'},{n:'Belagerungswerkstatt',u:12,base:600,cyc:14,cnt:l=>Math.ceil(l/4),req:'siege'}];
+const BT=[{n:'Hütte',u:0,base:26,cyc:6,cnt:l=>l+T('hut')},{n:'Schießstand',u:1,base:60,cyc:8,cnt:l=>l+T('arch')},{n:'Kaserne',u:2,base:200,cyc:12,cnt:l=>Math.ceil(l/2)+T('barr')},{n:'Magierturm',u:3,base:400,cyc:14,cnt:l=>Math.ceil(l/3),req:'mage'},
+{n:'Speerhalle',u:9,base:120,cyc:9,cnt:l=>l,req:'spear'},{n:'Stall',u:10,base:340,cyc:14,cnt:l=>Math.ceil(l/2),req:'cav'},{n:'Kapelle',u:11,base:420,cyc:18,cnt:l=>Math.ceil(l/3),req:'priest'},{n:'Belagerungswerkstatt',u:12,base:800,cyc:21,cnt:l=>Math.ceil(l/4),req:'siege'}];
 const NB=BT.length,unlocked=k=>!BT[k].req||T(BT[k].req);
 const U=[
 {n:'Bauer',hp:30,dmg:5,cd:.8,rng:9,spd:44,sz:15},
@@ -116,6 +120,7 @@ const U=[
 {n:'Katapult',hp:130,dmg:70,cd:4,rng:300,spd:20,sz:24},
 {n:'Wolf',hp:28,dmg:6,cd:.7,rng:9,spd:86,sz:14,g:2,s:.04},
 {n:'Troll',hp:500,dmg:25,cd:1.5,rng:14,spd:24,sz:28,g:25,s:.6,arm:.15}];
+U.forEach(u=>{u.spd*=.6;u.cd*=1.2;if(u.g)u.g*=.8});
 // ---------- Sprites ----------
 const mk=(w,h)=>{const c=document.createElement('canvas');c.width=w;c.height=h;return c};
 function circ(c,x,y,r,f){c.fillStyle=f;c.beginPath();c.arc(x,y,r,0,7);c.fill()}
@@ -170,19 +175,22 @@ function genGround(t){theme=t;const th=THEMES[t];gx.setTransform(GR,0,0,GR,0,0);
  dc.setTransform(1,0,0,1,0,0);dc.clearRect(0,0,DC.width,DC.height)}
 // ---------- Zustand ----------
 let S,P=[],E=[],pr=[],pt=[],hP,hE,lP=new Int32Array(8192),lE=new Int32Array(8192),GW,GH,SC=1,cv=$('#cv'),ctx=cv.getContext('2d'),paused=false,sel=0,acc=0,hpPeak=1,hpNow=0;
-const castMax=()=>1500*(1+.2*T('castle')+(S&&S.bl?S.bl.castle:0));
+const castMax=()=>1500*(1+.2*T('castle')+(S&&S.bl?S.bl.castle:0))*(1+RB('r_castle'));
 function newRun(){
- S={bl:{dmg:0,hp:0,gold:0,prod:0,castle:0,soul:0,cry:0},cd1:0,cd2:0,cry:0,choose:0,wk:0,l:1,t:0,gold:60+50*T('gold')+40*sv.asc,c:castMax(),b:Array(15).fill(null),sp:0,sd:0,rp:0,over:0,kills:0};
+ S={act:sv.act,won:0,bl:{dmg:0,hp:0,gold:0,prod:0,castle:0,soul:0,cry:0},cd1:0,cd2:0,cry:0,choose:0,wk:0,l:1,t:0,gold:40+50*T('gold')+40*sv.asc,c:castMax(),b:Array(15).fill(null),sp:0,sd:0,rp:0,over:0,kills:0};
  S.b[0]={k:0,l:1+T('start'),c:1};P=[];E=[];pr=[];pt=[];hpPeak=1;autoX=Math.max(CAST+70,sv.rally*WW);$('#over').style.display='none';$('#bless').style.display='none';genGround(0);startLevel()}
-function startLevel(){S.wk=waveKind(S.l);S.t=0;S.sp=0;S.sd=0;S.rp=0;hpPeak=1;const t=((S.l-1)/6|0)%4;if(t!=theme)genGround(t);else{dc.setTransform(1,0,0,1,0,0);dc.globalCompositeOperation='destination-out';dc.fillStyle='rgba(0,0,0,.45)';dc.fillRect(0,0,DC.width,DC.height);dc.globalCompositeOperation='source-over'}}
+function startLevel(){S.wk=waveKind(S.l);S.t=0;S.sp=0;S.sd=0;S.rp=0;hpPeak=1;const t=(((S.l-1)/6|0)+(S.act|0))%4;if(t!=theme)genGround(t);else{dc.setTransform(1,0,0,1,0,0);dc.globalCompositeOperation='destination-out';dc.fillStyle='rgba(0,0,0,.45)';dc.fillRect(0,0,DC.width,DC.height);dc.globalCompositeOperation='source-over'}}
 const waveKind=L=>L%5==0?4:L>=10&&L%7==6?3:L>=6&&L%4==3?2:L>=3&&L%4==1?1:0,WKN=['Gemischte Welle','Wolfsrudel 🐺 (Tipp: Speerträger)','Magierzirkel 🧙 (Tipp: Reiter)','Trollmarsch 👹 (Tipp: Katapulte)','Boss: Schnitter 💀'];
-const cfL=L=>1+(CF-1)*Math.min(1,(L-1)/6),WN=L=>Math.round(cfL(L)*(1+2.5*L+.55*L*L)*(L%5==4?.75:1)),waveN=L=>Math.round(20+11*L*(1+L*.015)),hpS=L=>1+.35*(L-1)+.03*(L-1)*(L-1),dmS=L=>1+.15*(L-1)+.006*(L-1)*(L-1);
+const cfL=L=>1+(CF-1)*Math.min(1,(L-1)/6),WN=L=>Math.round(cfL(L)*(1+2.5*L+.55*L*L)*(L%5==4?.75:1)),waveN=L=>Math.round(20+11*L*(1+L*.015)),hpS=L=>(1+.9*(L-1)+.12*(L-1)*(L-1))*Math.pow(2.4,S.act|0),dmS=L=>(1+.3*(L-1)+.02*(L-1)*(L-1))*Math.pow(1.6,S.act|0);
 const cntOf=k=>S.b.filter(b=>b&&b.k==k).length;
 const bCost=k=>Math.ceil(BT[k].base*Math.pow(1.17,cntOf(k))*(1-.04*T('cost')));
 const uCost=b=>Math.ceil(BT[b.k].base*.9*Math.pow(1.4,b.l-1)*(1-.05*T('upg')));
 // ---------- Einheiten ----------
 let lineX=300,autoX=300,rallyX=300,slowT=0,punch=0,camInfo=null,avgPX=100,critP=0,GL=false,shake=0,corp=[],ci=0,decN=0,decDirty=0;const decArr=new Float32Array(3000*8);
 const cSpark=[1,.9,.5],cBlood=[.55,.05,.08],cMagic=[.75,.4,1],cGreen=[.4,1,.4],cSoul=[.5,1,1],cGold=[1,.85,.3],cFire=[1,.55,.15],cDust=[.75,.7,.62];
+const RELICS=[['r_dmg','🗡','Drachenzahn','+6% Schaden',.06],['r_hp','🛡','Königsschild','+6% Leben',.06],['r_gold','🏆','Goldkelch','+8% Gold',.08],['r_soul','💎','Seelenstein','+8% Seelen',.08],['r_prod','⏳','Sanduhr','+5% Produktion',.05],['r_castle','🏰','Grundstein','+10% Burg-Leben',.1],['r_crit','🎯','Falkenauge','+1,5% Krit-Chance',.015],['r_cry','📯','Kriegshorn','−4% Abklingzeit der Fähigkeiten',.04]];
+const RB=id=>(sv.rel[id]|0)*RELICS.find(r=>r[0]==id)[4];
+function relicDrop(n){for(let i=0;i<n;i++){const r=RELICS[R()*RELICS.length|0];if((sv.rel[r[0]]|0)<20)sv.rel[r[0]]=(sv.rel[r[0]]|0)+1;toast('Relikt: '+r[1]+' '+r[2]+' Stufe '+sv.rel[r[0]])}save()}
 const RANKS=['Rekrut','Knappe','Hauptmann','Ritter','Kommandant','General','Feldherr','Marschall','König','Kaiser'];
 const tierOf=l=>{const e=T('elite');return l>=20-2*e?3:l>=10-e?2:l>=5-e?1:0},TN3=['','Bronze','Silber','Gold'];
 let AC=null;const sfxT={};
@@ -200,14 +208,15 @@ function flashFx(c,a){if(!sv.opt.flash)return;const f=$('#flash');f.style.transi
 function levelFx(){sfx('ding');punch=1;if(GL){ring(CAST,WH/2,1200,[.5,.8,1],1.2);ring(CAST,WH/2,700,[1,.9,.5],.9);flashFx('#bfe0ff',.3)}}
 const ROLE=[0,48,-6,56,0,0,0,0,0,10,-14,92,104],bn=(a,d)=>a==9&&d==13?1.8:a==10&&d==7?1.6:a==12&&(d==14||d==8)?1.5:a==3&&d==5?1.4:a==13&&(d==1||d==3||d==11)?1.6:a==14&&d==2?1.3:1;
 function mkU(k,team,x,y,hm,dm,tier){const d=U[k];return{hy:LY0+R()*(LY1-LY0),wx:0,wt:R()*2,tier:tier|0,k,t:team,x,y,hp:d.hp*hm,mhp:d.hp*hm,dmg:d.dmg*dm,cdm:d.cd,cd:R(),rng:d.rng,spd:d.spd*(team?1:1+.06*T('speed')),sz:d.sz,arm:d.arm||0,tg:null,rt:R()*.3,at:0,ph:R()*9,ar:team?9:11,fl:0}}
-function produce(b){const k=b.k,bc=1+(CF-1)*Math.min(1,(b.l-1)/6),n=Math.max(1,Math.round(BT[k].cnt(b.l)*bc)),m=(1+.08*(b.l-1))*(1+.03*sv.glory)/bc,tr=tierOf(b.l);let dm=m*(1+.05*T('war')),hm=m*(1+.1*T('rally'));dm*=1+S.bl.dmg;hm*=1+S.bl.hp;
+function produce(b){const k=b.k,bc=1+(CF-1)*Math.min(1,(b.l-1)/6),n=Math.max(1,Math.round(BT[k].cnt(b.l)*bc)),m=(1+.08*(b.l-1))*(1+.03*sv.glory)/bc,tr=tierOf(b.l);let dm=m*(1+.05*T('war')),hm=m*(1+.1*T('rally'));dm*=(1+S.bl.dmg)*(1+RB('r_dmg'));hm*=(1+S.bl.hp)*(1+RB('r_hp'));
  if(k==1)dm*=1+.12*T('bow');if(k==3)dm*=1+.15*T('magedmg');if(k==6)dm*=1+.1*T('rally');if(k==2)hm*=1+.15*T('kh');
  for(let i=0;i<n&&P.length<CAP[0];i++)P.push(mkU(BT[k].u,0,CAST+10+R()*16,Math.max(LY0,Math.min(LY1,WH/2+(R()-.5)*190)),hm,dm,tr))}
 function pick(L){const w=[10,L>=2?4+L:0,L>=3?3+L*.4:0,L>=4?2+L/2:0,L>=6?2+L/3:0,L>=10?1+L/6:0],ks=[4,5,13,6,7,14];if(S.wk==1)w[2]*=5;else if(S.wk==2)w[4]*=5;else if(S.wk==3){w[5]*=6;w[3]*=2}let sm=0;for(const x of w)sm+=x;let r=R()*sm;for(let i=0;i<6;i++){if((r-=w[i])<0)return ks[i]}return 4}
 function spawnE(k){if(E.length>=CAP[1])return;const L=S.l;{const cf=k==8?1:cfL(L);E.push(mkU(k,1,WW+8+R()*50,LY0+R()*(LY1-LY0),hpS(L)/cf,dmS(L)/cf))}}
 function dmg(t,d,sx,sy){d*=1-t.arm;t.hp-=d;t.fl=.1;if(t.hp<=0)die(t)}
-function die(t){const x=t.x,y=t.y,cf=t.k==8?1:cfL(S.l);
- if(t.t){const d=U[t.k];S.gold+=d.g/cf*(1+.12*T('loot'))*(1+.02*Math.min(S.l,30))*(1+.03*sv.glory)*(1+S.bl.gold);let s=d.s*(1+.15*T('soul'))*(1+S.bl.soul)/cf;while(s>=1){sv.souls++;s--}if(R()<s)sv.souls++;S.kills++}
+const finalL=()=>10+5*(S.act|0),ACTN=['Schneegrenze','Grüne Täler','Wüstenpass','Aschelande'];
+function die(t){const x=t.x,y=t.y,cf=t.k==8?1:cfL(S.l);if(t.k==8&&t.t){if(t.fin&&!S.won)setTimeout(victory,900);else if(!t.fin)relicDrop(1)}
+ if(t.t){const d=U[t.k];S.gold+=d.g/cf*(1+.12*T('loot'))*(1+.02*Math.min(S.l,30))*(1+.03*sv.glory)*(1+S.bl.gold)*(1+RB('r_gold'));let s=d.s*(1+.15*T('soul'))*(1+S.bl.soul)*(1+RB('r_soul'))/cf;while(s>=1){sv.souls++;s--}if(R()<s)sv.souls++;S.kills++}
  if(GL){corp[ci++%1600]={k:t.k,x,z:y,yaw:t.t?Math.PI:0,t0:performance.now(),s:t.sz/15*(1+.12*t.tier)};dec(x,y,t.sz*.5+R()*6);
   const big=t.sz>=19;for(let i=0;i<(big?7:3);i++)fx(x,y,8,(R()-.5)*70,(R()-.5)*50,20+R()*50,.6,cBlood,1.8,2,160);
   if(t.t&&R()<.35)fx(x,y,10,0,0,25,1,cSoul,3.5,0,-8);
@@ -260,10 +269,11 @@ function calcLine(dt){const nP=P.length,nE=E.length;rallyX=Math.max(CAST+70,Math
 let stance=sv.stance;
 function setStance(n,q){stance=n;sv.stance=n;if(n==0)autoX=rallyX;document.querySelectorAll('.st').forEach(b=>b.classList.toggle('sel',+b.dataset.s==n));if(!q){sfx('click');toast(['🤖 Auto: Armee sammelt sich, rückt bei Überlegenheit vor und weicht bei Unterlegenheit zurück','🛡 Halten: Armee sammelt sich an der Fahne','⚔ Angriff: Armee marschiert bis zum Ende durch','↩ Rückzug: Armee sammelt sich an der Burg'][n])}}
 function setRally(wx){sv.rally=Math.max(.12,Math.min(.9,wx/WW));rallyX=Math.max(CAST+70,Math.min(WW-70,sv.rally*WW));if(stance!=1&&stance!=0)setStance(1,1);if(stance==0)autoX=rallyX;ring(rallyX,WH/2,90,[1,.85,.4],.6);sfx('click');toast('🚩 Sammelpunkt gesetzt');document.querySelectorAll('.st').forEach(b=>b.classList.toggle('sel',+b.dataset.s==stance))}
-function warcry(){if(S.over)return;if(S.cd1>0)return;S.cry=8;S.cd1=45*(1-S.bl.cry);ring(avgPX,WH/2,520,[1,.85,.4],.9);ring(avgPX,WH/2,300,[1,1,.7],.6);flashFx('#ffe9a0',.18);shake=Math.max(shake,.4);sfx('horn');toast('⚡ Kriegsruf! +30% Schaden und Tempo')}
+function warcry(){if(S.over)return;if(S.cd1>0)return;S.cry=8;S.cd1=45*(1-Math.min(.6,S.bl.cry+RB('r_cry')));ring(avgPX,WH/2,520,[1,.85,.4],.9);ring(avgPX,WH/2,300,[1,1,.7],.6);flashFx('#ffe9a0',.18);shake=Math.max(shake,.4);sfx('horn');toast('⚡ Kriegsruf! +30% Schaden und Tempo')}
 function meteor(q){if(S.over)return;if(!T('meteor'))return q||toast('Meteor im Talentbaum freischalten');if(S.cd2>0)return;if(!E.length)return q||toast('Keine Gegner in Sicht');
- let best=-1,bx=0,bz=0;for(let cy=0;cy<GH;cy++)for(let cx=0;cx<GW;cx++){let n=0,sx=0,sz=0;for(let i=hE[cy*GW+cx];i>=0;i=lE[i]){const o=E[i];if(o.hp>0){n++;sx+=o.x;sz+=o.y}}if(n>best){best=n;bx=sx/n;bz=sz/n}}
- if(best<1)return;S.cd2=30*(1-S.bl.cry);const d=110*(1+.32*S.l)*(1+.15*T('magedmg'));pr.push({uk:3,sx:bx+90,sz:bz,h0:420,tx:bx,tz:bz,h1:0,t:0,T:.75,k:3,tg:null,d,tm:0,x:bx+90,z:bz,h:420,px:bx+90,pz:bz,ph0:420,dist:0});sfx('horn',.6);toast('☄ Meteor!')}
+ const N=GW*GH,cn=new Int32Array(N),sx=new Float32Array(N),sz=new Float32Array(N);let best=0,bi=-1;for(const o of E){if(o.hp<=0)continue;const c=Math.min(GH-1,o.y/(CS*2)|0)*GW+Math.min(GW-1,o.x/(CS*2)|0);cn[c]++;sx[c]+=o.x;sz[c]+=o.y;if(cn[c]>best){best=cn[c];bi=c}}
+ if(bi<0)return;const bx=sx[bi]/best,bz=sz[bi]/best;
+ S.cd2=30*(1-Math.min(.6,S.bl.cry+RB('r_cry')));const d=110*(1+.32*S.l)*(1+.15*T('magedmg'));pr.push({uk:3,sx:bx+90,sz:bz,h0:420,tx:bx,tz:bz,h1:0,t:0,T:.75,k:3,tg:null,d,tm:0,x:bx+90,z:bz,h:420,px:bx+90,pz:bz,ph0:420,dist:0});sfx('horn',.6);toast('☄ Meteor!')}
 const BLS=[['Kriegsgeheul','+18% Schaden für alle Einheiten','dmg',.18],['Eiserne Haut','+22% Leben für alle Einheiten','hp',.22],['Goldregen','+30% Gold von Gegnern','gold',.3],['Schnelle Hände','+15% Produktionstempo','prod',.15],['Mauerweihe','+35% Burg-Leben, Burg wird geheilt','castle',.35],['Seelenopfer','+35% Seelen in diesem Durchgang','soul',.35],['Meister der Rufe','Kriegsruf & Meteor laden 30% schneller','cry',.3]];
 let blessTO=0;
 function offerBless(){const pool=BLS.slice().sort(()=>R()-.5).slice(0,3);S.choose=1;const el=$('#bless');el.innerHTML='<h3>Segen wählen – Level '+S.l+'</h3><div>'+pool.map((b,i)=>`<button class="btn bc" data-i="${i}"><b>${b[0]}</b><span>${b[1]}</span></button>`).join('')+'</div>';el.style.display='flex';
@@ -272,11 +282,11 @@ function offerBless(){const pool=BLS.slice().sort(()=>R()-.5).slice(0,3);S.choos
 function update(dt){
  if(S.over)return;S.t+=dt;S.cd1-=dt;S.cd2-=dt;S.cry-=dt;calcLine(dt);const L=S.l,N=WN(L);
  S.sp+=dt*N/(D*.8);while(S.sp>=1&&S.sd<N){S.sp--;S.sd++;spawnE(pick(L))}
- if(L%5==0&&!S.rp&&S.t>12){S.rp=1;for(let i=0;i<1+(L/10|0);i++)spawnE(8)}
- const sm=(1+.06*T('spawn'))*(1+S.bl.prod);
+ if(L%5==0&&!S.rp&&S.t>12){S.rp=1;for(let i=0;i<1+(L/10|0);i++){spawnE(8);if(L==finalL()&&!S.won&&!i){const b=E[E.length-1];if(b&&b.k==8){b.hp*=2.5;b.mhp=b.hp;b.fin=1;b.sz=44}}}}
+ const sm=(1+.06*T('spawn'))*(1+S.bl.prod)*(1+RB('r_prod'));
  for(const b of S.b)if(b){b.c-=dt*sm;if(b.c<=0){b.c+=BT[b.k].cyc*(.9+R()*.2);produce(b)}}
  if(T('heal'))S.c=Math.min(castMax(),S.c+castMax()*.01*T('heal')*dt);
- {let sx=0;for(let i=0;i<P.length;i++)sx+=P[i].x;avgPX=P.length?sx/P.length:CAST+20;critP=.04*T('crit')}
+ {let sx=0;for(let i=0;i<P.length;i++)sx+=P[i].x;avgPX=P.length?sx/P.length:CAST+20;critP=.04*T('crit')+RB('r_crit')}
  if(T('auto')){S.ab=(S.ab||0)+dt;if(S.ab>=[0,6,3.5,2][T('auto')]){S.ab=0;autoAct()}}
  grid(P,hP,lP);grid(E,hE,lE);
  stepTeam(P,hP,lP,hE,lE,E,dt);stepTeam(E,hE,lE,hP,lP,P,dt);
@@ -286,7 +296,9 @@ function update(dt){
  for(let i=pt.length-1;i>=0;i--){const p=pt[i];p.l-=dt;p.x+=p.vx*dt;p.z+=p.vz*dt;p.h+=p.vh*dt;p.vh-=p.g*dt;if(p.h<0&&p.k==2)p.l=0;if(p.l<=0){pt[i]=pt[pt.length-1];pt.pop()}}
  compact(P);compact(E);
  if(S.t>=D||(S.sd>=N&&!E.length&&S.t>6)){S.gold+=15+6*S.l;let s=(1+(S.l/3|0))*(1+.15*T('soul'));sv.souls+=Math.floor(s);if(S.l>sv.best)sv.best=S.l;S.l++;startLevel();levelFx();toast('Level '+S.l+' – '+WKN[S.wk]);if(S.l%5==1&&S.l>1)offerBless()}}
-function defeat(){S.over=1;S.c=0;const g=Math.floor(S.l*2*(1+.15*T('soul')));sv.souls+=g;save();if(S.l>sv.best)sv.best=S.l;$('#otxt').innerHTML='Die Burg ist gefallen!<br>Erreichtes Level: '+S.l+' (Rekord '+sv.best+')<br>Seelen-Bonus: +'+g+' 💧'+(T('autorestart')?'<br><small>Neustart in 6 s …</small>':'');$('#over').style.display='flex';if(T('autorestart'))setTimeout(()=>{if(S.over)newRun()},6000)}
+function victory(){if(S.won||S.over)return;S.won=1;S.choose=1;const a=S.act|0,g=Math.floor(60*Math.pow(a+1,1.6)*(1+.15*T('soul'))*(1+RB('r_soul')));sv.souls+=g;sv.wins++;sv.actMax=Math.max(sv.actMax,a+1);relicDrop(3);save();levelFx();
+ $('#wtxt').innerHTML='🏆 Akt '+(a+1)+' – '+ACTN[a%4]+' bezwungen!<br>Seelen: +'+g+' 💧 · 3 Relikte<br><small>Akt '+(a+2)+' ist freigeschaltet – die Gegner werden deutlich stärker.</small>';$('#win').style.display='flex'}
+function defeat(){S.over=1;S.c=0;const g=Math.floor(S.l*2*(1+.15*T('soul')));sv.souls+=g;save();if(S.l>sv.best)sv.best=S.l;$('#otxt').innerHTML='Die Burg ist gefallen!<br>Akt '+((S.act|0)+1)+', Level '+S.l+' von '+finalL()+' (Rekord '+sv.best+')<br>Seelen-Bonus: +'+g+' 💧'+(T('autorestart')?'<br><small>Neustart in 6 s …</small>':'');$('#over').style.display='flex';if(T('autorestart'))setTimeout(()=>{if(S.over)newRun()},6000)}
 // ---------- Rendering ----------
 function resize(){const r=$('#main').getBoundingClientRect(),d=Math.min(devicePixelRatio||1,3)*(window.qs||1);cv.width=r.width*d;cv.height=r.height*d;if(window.glResize)glResize(r.width*d,r.height*d);SC=cv.height/WH;WW=Math.min(2600,Math.max(450,cv.width/SC));GW=Math.ceil(WW/CS)+2;GH=Math.ceil(WH/CS)+2;hP=new Int32Array(GW*GH);hE=new Int32Array(GW*GH)}
 const BK=Array.from({length:40},()=>[]);
@@ -317,11 +329,11 @@ function hammer(q){let bi=-1,bc=1e18;S.b.forEach((b,i)=>{if(b&&b.l<30){const c=u
 function autoAct(){if(T('auto')>=2&&S.cd1<=0&&E.length>25)warcry();if(T('auto')>=3&&T('meteor')&&S.cd2<=0&&E.length>20)meteor(1);const nb=S.b.filter(x=>x).length;if(S.b.includes(null)&&nb<3+S.l*.6){const ks=[0,1,2,4,5,3,6,7].filter(unlocked).filter(k=>cntOf(k)<2+S.l/4);ks.sort((a,b)=>bCost(a)/BT[a].base-bCost(b)/BT[b].base);for(const k of ks)if(S.gold>=bCost(k)){buy(k,1);return}}hammer(1)}
 function refresh(){
  $('#gold').textContent='🪙 '+nf(S.gold);$('#souls').textContent='💧 '+nf(sv.souls);
- slEl.forEach((d,i)=>{const b=S.b[i];if(!b){if(d.innerHTML)d.innerHTML='';d.className='slot e';return}
+ slEl.forEach((d,i)=>{const b=S.b[i];if(!b){if(d.innerHTML){d.innerHTML='';delete d.dataset.k}d.className='slot e';return}
   const c=uCost(b),key=b.k+'_'+b.l+'_'+c;if(d.dataset.k!=key){d.dataset.k=key;d.innerHTML=`<img src="${BI[b.k]}"><span class="lv">Lv${b.l}</span><span class="pl">+${BT[b.k].cnt(b.l)}</span><div class="cs">🪙${nf(c)}</div><div class="pg"></div>`}
   d.className='slot t'+tierOf(b.l)+(S.gold>=c?'':' na');d.querySelector('.cs').textContent='🪙'+nf(c)});
  tbs.forEach((t,j)=>{if(!j){t.className='tb';return}const k=j-1,c=bCost(k);t.querySelector('.cs').textContent='🪙'+nf(c);t.className='tb'+(unlocked(k)?S.gold>=c?'':' na':' hid')});
- $('#lvl').textContent='Level '+S.l+' · '+WKN[S.wk].split(' (')[0];$('#nxt').textContent='Nächste: '+WKN[waveKind(S.l+1)];$('#bCry').textContent='⚡'+(S.cd1>0?' '+Math.ceil(S.cd1):'');$('#bCry').classList.toggle('na',S.cd1>0);$('#bMet').textContent=T('meteor')?'☄'+(S.cd2>0?' '+Math.ceil(S.cd2):''):'☄🔒';$('#bMet').classList.toggle('na',!T('meteor')||S.cd2>0);$('.crown').textContent='♛ '+RANKS[Math.min(sv.asc,9)]+(sv.glory?' · ⭐'+sv.glory:'');
+ $('#lvl').textContent='Akt '+((S.act|0)+1)+' · Level '+S.l+'/'+finalL()+' · '+WKN[S.wk].split(' (')[0];$('#nxt').textContent='Nächste: '+WKN[waveKind(S.l+1)];$('#bCry').textContent='⚡'+(S.cd1>0?' '+Math.ceil(S.cd1):'');$('#bCry').classList.toggle('na',S.cd1>0);$('#bMet').textContent=T('meteor')?'☄'+(S.cd2>0?' '+Math.ceil(S.cd2):''):'☄🔒';$('#bMet').classList.toggle('na',!T('meteor')||S.cd2>0);$('.crown').textContent='♛ '+RANKS[Math.min(sv.asc,9)]+(sv.glory?' · ⭐'+sv.glory:'');
  let hp=0;for(const u of E)hp+=u.hp;hp+=Math.max(0,WN(S.l)-S.sd)*U[4].hp*hpS(S.l)/cfL(S.l);hpNow=hp;if(hp>hpPeak)hpPeak=hp;
  $('#bE').style.transform=`scaleX(${Math.min(1,hp/hpPeak)})`;$('#tE').textContent=nf(hp);
  $('#bC').style.transform=`scaleX(${Math.max(0,S.c)/castMax()})`;$('#tC').textContent='Burg '+nf(S.c);
@@ -375,7 +387,7 @@ function tbuy(id){const n=tdef(id);if(T(id)>=n[4]||(n[3]&&!T(n[3])))return;const
 $('#tree').addEventListener('pointerover',e=>{if(e.pointerType!='mouse')return;const el=e.target.closest('.tn');if(el)tip(el)});
 $('#tree').addEventListener('pointerout',e=>{if(e.pointerType=='mouse')$('#tip').style.display='none'});
 $('#tree').addEventListener('click',e=>{const el=e.target.closest('.tn');if(!el)return;const id=el.dataset.id;if(e.pointerType=='mouse'||e.detail==0||tsel==id){tbuy(id)}else{tsel=id;tip(el)}});
-function openMenu(){optBtn();ascBtn();paused=true;buildTree.d=0;$('#menu').style.display='flex';tsel=null;buildTree()}
+function openMenu(){actBtn();optBtn();ascBtn();paused=true;buildTree.d=0;$('#menu').style.display='flex';tsel=null;buildTree()}
 function closeMenu(){$('#menu').style.display='none';$('#tip').style.display='none';paused=false;$('#bPause').textContent='⏸';refresh()}
 const gl2=()=>S.l>=8?Math.floor(Math.pow(S.l,1.5)/3*(1+.1*T('glory'))):0;
 function ascBtn(){$('#mAsc').textContent='⭐ Aufstieg (+'+gl2()+' Ruhm)'}
@@ -383,11 +395,16 @@ $('#mAsc').onclick=()=>{const g=gl2();if(!g)return toast('Aufstieg ab Level 8');
 $('#bMenu').onclick=openMenu;$('#bTal').onclick=openMenu;$('#oTal').onclick=openMenu;$('#mBack').onclick=closeMenu;
 const optBtn=()=>{$('#mSnd').textContent='🔊 Ton: '+(sv.opt.sound?'An':'Aus');$('#mShk').textContent='📳 Effekte: '+(sv.opt.shake?'An':'Aus')};
 $('#mSnd').onclick=()=>{sv.opt.sound^=1;optBtn();sfx('click');save()};$('#mShk').onclick=()=>{sv.opt.shake^=1;sv.opt.flash=sv.opt.shake;optBtn();save()};
+const actBtn=()=>{$('#mAct').textContent='🗺 Akt '+(sv.act+1)+(sv.act<sv.actMax?' ▸':'')+' (Boss L'+(10+5*sv.act)+')'};
+$('#mAct').onclick=()=>{sv.act=sv.act>=sv.actMax?0:sv.act+1;actBtn();toast('Akt '+(sv.act+1)+' gilt ab dem nächsten Durchgang (Neustart)');save()};
+$('#mRel').onclick=()=>{const r=$('#rel');if(r.style.display=='grid'){r.style.display='none';return}r.innerHTML=RELICS.map(x=>`<div>${x[1]} <b>${x[2]}</b> Stufe ${sv.rel[x[0]]|0}<br><small>${x[3]} (aktuell ${Math.round((sv.rel[x[0]]|0)*x[4]*1000)/10}%)</small></div>`).join('')+'<div style="grid-column:1/-1"><small>Relikte fallen von Bossen (alle 5 Level) und beim Sieg über einen Akt.</small></div>';r.style.display='grid'};
 $('#mHelp').onclick=()=>{const h=$('#help');h.style.display=h.style.display=='none'?'block':'none'};
 $('#mExp').onclick=()=>{save();const t=btoa(unescape(encodeURIComponent(JSON.stringify(sv))));try{navigator.clipboard.writeText(t).then(()=>toast('Spielstand in Zwischenablage kopiert'),()=>prompt('Spielstand kopieren:',t))}catch(e){prompt('Spielstand kopieren:',t)}};
 $('#mImp').onclick=()=>{const t=prompt('Spielstand-Code einfügen:');if(!t)return;try{const o=JSON.parse(decodeURIComponent(escape(atob(t.trim()))));if(!o||typeof o!='object'||(o.ver||1)>2)throw 0;localStorage.setItem(SAVE,JSON.stringify(o));location.reload()}catch(e){toast('Ungültiger Code')}};
 $('#mRestart').onclick=()=>{if(confirm('Aktuellen Durchgang neu starten?')){newRun();closeMenu()}};
 $('#mWipe').onclick=()=>{if(confirm('Gesamten Spielstand löschen?')){localStorage.removeItem(SAVE);sv={t:{},souls:0,best:1,spd:1,run:null,glory:0,asc:0};newRun();buildTree()}};
+$('#wEnd').onclick=()=>{$('#win').style.display='none';S.choose=0};
+$('#wNext').onclick=()=>{$('#win').style.display='none';sv.act=Math.min(sv.actMax,(S.act|0)+1);newRun()};
 $('#oBtn').onclick=()=>{newRun()};
 $('#bPause').onclick=()=>{paused=!paused;$('#bPause').textContent=paused?'▶':'⏸'};
 document.querySelectorAll('.st').forEach(b=>b.onclick=()=>setStance(+b.dataset.s));$('#bCry').onclick=warcry;$('#bMet').onclick=()=>meteor();
