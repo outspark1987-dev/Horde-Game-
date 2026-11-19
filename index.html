@@ -45,25 +45,55 @@ canvas#cv{position:absolute;inset:0;width:100%;height:100%;display:block}
 #win{position:fixed;inset:0;z-index:12;display:none;flex-direction:column;align-items:center;justify-content:center;gap:1rem;background:#000b;font-size:1.5rem;text-align:center}
 #rel{display:none;max-width:46rem;padding:.6rem 1rem;background:#1c3263;border:.15rem solid #a9c0ee;border-radius:.5rem;font-size:.9rem;margin:0 .7rem;grid-template-columns:repeat(auto-fill,minmax(13rem,1fr));gap:.4rem}
 #menu,#over{position:fixed;inset:0;z-index:10;display:none;flex-direction:column;align-items:center}
-#menu{z-index:11!important;background:repeating-linear-gradient(0deg,#0000 0 2.7rem,#27478a66 2.7rem 2.9rem),repeating-linear-gradient(90deg,#0000 0 5.4rem,#27478a44 5.4rem 5.55rem),linear-gradient(#4f7bcc,#3a63b2)}
 #over{background:#000a;justify-content:center;gap:1rem;font-size:1.6rem;text-align:center}
-#top{margin:.7rem;flex:none}
-#top .pill{min-width:12rem;font-size:1.5rem;padding:.2rem 1.5rem;background:#1e3f84}
-#tw{padding-bottom:2rem;flex:1;overflow:auto;width:100%;min-height:0;position:relative}
-#tree{position:relative;width:56rem;height:60rem;margin:0 auto}
-#tree svg{position:absolute;inset:0;width:100%;height:100%}
-.tn{position:absolute;width:5.2rem;height:5.2rem;border-radius:.9rem;border:.25rem solid #cfd9ee;background:linear-gradient(#3fae5a,#237a3c);display:flex;align-items:center;justify-content:center;font-size:2.4rem;cursor:pointer;box-shadow:0 .2rem .3rem #0006}
-.tn.no{background:linear-gradient(#c24b55,#8c2a35)}.tn.mx{background:linear-gradient(#e6b730,#a67c12)}
-.tn.lk{background:linear-gradient(#6d7a93,#4c5870);filter:grayscale(.4)}
-.tn .r{position:absolute;left:.25rem;top:.05rem;font-size:.75rem;font-weight:bold;text-shadow:0 1px 2px #000}
-.tn .c{position:absolute;bottom:-1.15rem;left:50%;transform:translateX(-50%);min-width:2.6rem;text-align:center;background:#237a3c;border:.15rem solid #9fe0ae;border-radius:.3rem .3rem .8rem .8rem;font-size:.9rem;font-weight:bold}
-.tn.no .c{background:#8c2a35;border-color:#e59aa1}.tn.mx .c{display:none}.tn.lk .c{display:none}
-#tip{position:fixed;z-index:20;width:19rem;background:#2c4a82;border:.2rem solid #cfd9ee;border-radius:.4rem;padding:.6rem .8rem;display:none;pointer-events:none;font-size:.95rem;box-shadow:0 .3rem 1rem #000a}
-#tip h4{margin:0 0 .4rem;font-size:1.1rem;border-bottom:.1rem solid #6d8dc9;padding-bottom:.3rem}
-#tip div{background:#1c3263;padding:.3rem .5rem;margin-top:.5rem}
 @media (orientation:portrait){#app{flex-direction:column}#side{width:100%;height:42%;flex:none;border-right:0;border-bottom:.4rem solid #183672;padding:.4rem;gap:.3rem}#slots{grid-template-columns:repeat(5,1fr);grid-template-rows:repeat(3,1fr)}#lvl,.crown{display:none}#tools{gap:.35rem}#tree{zoom:.85}}
 @media (max-height:480px) and (orientation:landscape){.crown{display:none}#tools{bottom:.3rem}#ctl .btn{padding:.2rem .5rem}}
-#bot{flex:none;display:flex;gap:.7rem;padding:.7rem;flex-wrap:wrap;justify-content:center}
+
+#menu{z-index:11!important;background:radial-gradient(ellipse at 50% 45%,#0000 45%,#0a1a4088 100%),url("data:image/svg+xml,%3Csvg%20xmlns%3D%27http%3A//www.w3.org/2000/svg%27%20width%3D%27160%27%20height%3D%2796%27%3E%3Crect%20width%3D%27160%27%20height%3D%2796%27%20fill%3D%27%234d7bd0%27/%3E%3Cg%20fill%3D%27%235f8ce0%27%3E%3Crect%20x%3D%272%27%20y%3D%272%27%20width%3D%2776%27%20height%3D%2744%27/%3E%3Crect%20x%3D%2782%27%20y%3D%272%27%20width%3D%2776%27%20height%3D%2744%27/%3E%3Crect%20x%3D%27-38%27%20y%3D%2750%27%20width%3D%2776%27%20height%3D%2744%27/%3E%3Crect%20x%3D%2742%27%20y%3D%2750%27%20width%3D%2776%27%20height%3D%2744%27/%3E%3Crect%20x%3D%27122%27%20y%3D%2750%27%20width%3D%2776%27%20height%3D%2744%27/%3E%3C/g%3E%3Cg%20fill%3D%27%236c98e6%27%20opacity%3D%27.7%27%3E%3Crect%20x%3D%272%27%20y%3D%272%27%20width%3D%2776%27%20height%3D%275%27/%3E%3Crect%20x%3D%2782%27%20y%3D%272%27%20width%3D%2776%27%20height%3D%275%27/%3E%3Crect%20x%3D%2742%27%20y%3D%2750%27%20width%3D%2776%27%20height%3D%275%27/%3E%3Crect%20x%3D%27122%27%20y%3D%2750%27%20width%3D%2776%27%20height%3D%275%27/%3E%3Crect%20x%3D%27-38%27%20y%3D%2750%27%20width%3D%2776%27%20height%3D%275%27/%3E%3C/g%3E%3Cg%20fill%3D%27%232d58ae%27%20opacity%3D%27.5%27%3E%3Crect%20x%3D%272%27%20y%3D%2740%27%20width%3D%2776%27%20height%3D%276%27/%3E%3Crect%20x%3D%2782%27%20y%3D%2740%27%20width%3D%2776%27%20height%3D%276%27/%3E%3Crect%20x%3D%2742%27%20y%3D%2788%27%20width%3D%2776%27%20height%3D%276%27/%3E%3Crect%20x%3D%27122%27%20y%3D%2788%27%20width%3D%2776%27%20height%3D%276%27/%3E%3Crect%20x%3D%27-38%27%20y%3D%2788%27%20width%3D%2776%27%20height%3D%276%27/%3E%3C/g%3E%3C/svg%3E");background-size:auto,10rem 6rem;overflow:hidden}
+#menu::before,#menu::after{content:'';position:absolute;top:0;bottom:0;width:4.2rem;z-index:0;background:repeating-linear-gradient(0deg,#d9c8a6 0 2.6rem,#8a7a5c 2.6rem 2.8rem),#cbb892;box-shadow:inset -.3rem 0 .4rem #0005}
+#menu::before{left:0}#menu::after{right:0;transform:scaleX(-1)}
+.deco{position:absolute;z-index:1;pointer-events:none;filter:drop-shadow(0 .3rem .3rem #0007)}
+.deco.bl{left:4.6rem;top:0;width:6.5rem}.deco.br{right:4.6rem;top:0;width:6.5rem}
+.torch{position:absolute;bottom:3.8rem;width:6rem;z-index:1;pointer-events:none}.torch.tl{left:.4rem}.torch.tr{right:.4rem}
+.flame{transform-origin:50% 100%;animation:fl .45s infinite alternate ease-in-out}.flame.b{animation-duration:.33s;animation-delay:-.2s}
+@keyframes fl{from{transform:scale(1,1) skewX(-3deg)}to{transform:scale(1.1,1.22) skewX(4deg)}}
+@media (max-width:900px){.deco,.torch,#menu::before,#menu::after{display:none}}
+#top{margin:.6rem 0 .2rem;flex:none;z-index:2;text-align:center}
+.plate{display:inline-flex;align-items:center;gap:.6rem;min-width:13rem;justify-content:center;padding:.25rem 1.6rem;font-size:1.6rem;font-weight:bold;border-radius:1rem;background:linear-gradient(#2a56a8,#17346e);border:.3rem solid #dfe7f5;box-shadow:0 0 0 .18rem #7d8aa6,0 .3rem .5rem #0008,inset 0 .2rem .3rem #0006}
+.plate svg{width:1.7rem;height:1.7rem;filter:drop-shadow(0 .1rem .1rem #0008)}
+#top small{display:block;margin-top:.3rem;font-size:.85rem;opacity:.95;text-shadow:0 1px 2px #000}
+#tw{padding-bottom:2.5rem;flex:1;overflow:auto;width:100%;min-height:0;position:relative;z-index:2;scrollbar-width:thin;cursor:grab}
+#tree{position:relative;width:56rem;height:60rem;margin:0 auto}
+#tree svg{position:absolute;inset:0;width:100%;height:100%;overflow:visible}
+.rib{position:absolute;left:-1.2rem;width:2.3rem;writing-mode:vertical-rl;transform:rotate(180deg);text-align:center;font-size:.85rem;font-weight:bold;letter-spacing:.15rem;color:#ffe9a8;background:linear-gradient(90deg,#14306a,#244e9c);border:.12rem solid #e8b830;border-radius:.4rem;padding:.4rem 0;text-shadow:0 1px 2px #000;opacity:.9}
+.tn{position:absolute;width:5.6rem;height:5.6rem;cursor:pointer;filter:drop-shadow(0 .25rem .2rem #0009);transition:transform .12s}
+.tn:hover{transform:scale(1.08)}.tn:active{transform:scale(.96)}
+.tn .fr,.tn .in{position:absolute;clip-path:polygon(28% 0,72% 0,100% 28%,100% 72%,72% 100%,28% 100%,0 72%,0 28%)}
+.tn .fr{inset:0;background:linear-gradient(145deg,#f5f8ff,#a9b6d2 45%,#5f6c90)}
+.tn .in{inset:.32rem;background:linear-gradient(#58d27a,#1f8a45);box-shadow:inset 0 .35rem .5rem #fff6,inset 0 -.4rem .6rem #0005}
+.tn .in::before{content:'';position:absolute;left:12%;right:12%;top:6%;height:34%;border-radius:50%;background:linear-gradient(#fff7,#fff0)}
+.tn .ic{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:2.35rem;filter:drop-shadow(0 .12rem 0 #0008);z-index:2}
+.tn.no .in{background:linear-gradient(#e0646e,#8c2536)}
+.tn.mx .fr{background:linear-gradient(145deg,#fff0a6,#e0a820 45%,#8a5a08)}.tn.mx .in{background:linear-gradient(#2f58b0,#14306c)}
+.tn.lk .fr{background:linear-gradient(145deg,#d6deee,#7f8aa6 50%,#4c5774)}.tn.lk .in{background:linear-gradient(#7b86a0,#4a546c)}.tn.lk .ic{font-size:2rem}
+.tn.ok:not(.mx){animation:glw 1.8s infinite ease-in-out}
+@keyframes glw{50%{filter:drop-shadow(0 0 .55rem #8dffae) drop-shadow(0 .25rem .2rem #0009)}}
+.tn .r{position:absolute;left:.35rem;top:-.15rem;z-index:3;font-size:.72rem;font-weight:bold;padding:.05rem .3rem;border-radius:.5rem;background:#0b1a3ccc;border:.1rem solid #cfd9ee}
+.tn .bd{position:absolute;right:-.2rem;bottom:.2rem;z-index:3;font-size:.72rem;font-weight:bold;padding:.02rem .3rem;border-radius:.5rem;background:#0b1a3ccc;border:.1rem solid #ffe48a;color:#ffe9a8}
+.tn .c{position:absolute;bottom:-1.45rem;left:50%;transform:translateX(-50%);z-index:3;min-width:3.6rem;padding:.12rem .4rem .45rem;text-align:center;font-size:.9rem;font-weight:bold;clip-path:polygon(0 0,100% 0,100% 72%,50% 100%,0 72%);background:linear-gradient(#59d078,#1f8a45);text-shadow:0 1px 1px #000;box-shadow:inset 0 0 0 .14rem #b8f5c8}
+.tn.no .c{background:linear-gradient(#e0646e,#8c2536);box-shadow:inset 0 0 0 .14rem #f5b9bf}.tn.mx .c,.tn.lk .c{display:none}
+.tn.pop{animation:pop .5s ease-out}@keyframes pop{30%{transform:scale(1.25);filter:brightness(1.6)}}
+.sp{position:absolute;left:50%;top:50%;width:.5rem;height:.5rem;border-radius:50%;background:#ffe48a;box-shadow:0 0 .5rem #ffd24a;animation:spk .6s ease-out forwards;z-index:5;pointer-events:none}
+@keyframes spk{to{transform:translate(var(--dx),var(--dy)) scale(.2);opacity:0}}
+#tip{position:fixed;z-index:20;width:20rem;background:linear-gradient(#34589c,#223f7c);border:.25rem solid #dfe7f5;border-radius:.5rem;padding:.7rem .9rem;display:none;pointer-events:none;font-size:.95rem;box-shadow:0 0 0 .15rem #5f6c90,0 .5rem 1.2rem #000b}
+#tip h4{margin:0 0 .45rem;font-size:1.2rem;color:#ffe9a8;border-bottom:.1rem solid #7d9ad6;padding-bottom:.35rem}#tip p{margin:0}
+#tip .ef,#tip .rq,#tip .co{background:#14264f;padding:.35rem .6rem;margin-top:.55rem;border-radius:.3rem}#tip .ef i{color:#8f8;font-style:normal}#tip .ef b{color:#8f8}#tip .rq{color:#ffb0b0}#tip .co b{color:#9ff0b4}
+#panel{z-index:2;display:flex;flex-direction:column;align-items:center;gap:.4rem;flex:none}
+#opts{display:none;gap:.5rem;flex-wrap:wrap;justify-content:center;padding:.5rem;background:#14264fcc;border:.15rem solid #a9c0ee;border-radius:.6rem;margin:0 .7rem}
+#bot{flex:none;display:flex;gap:.6rem;padding:.5rem .7rem .8rem;flex-wrap:wrap;justify-content:center;align-items:center;z-index:2}
+#bot .big{font-size:1.5rem;padding:.4rem 2.6rem}
+#menu .btn{background:linear-gradient(#5a86d6,#2f5aa8);border-color:#dfe7f5}
+
 </style></head><body>
 <div id="app">
 <div id="side">
@@ -83,11 +113,11 @@ canvas#cv{position:absolute;inset:0;width:100%;height:100%;display:block}
  <div id="tools"></div>
 </div></div>
 <div id="menu">
- <div id="top"><div class="pill" id="msouls"></div><div style="text-align:center;font-size:.9rem;margin-top:.3rem;opacity:.9">Talentbaum – tippe auf ein Talent und kaufe es mit Seelen</div></div>
+ <svg class='deco bl' viewBox='0 0 120 230'><rect x='2' y='0' width='116' height='16' rx='6' fill='#a5b0c8' stroke='#5f6c90' stroke-width='3'/><path d='M14 16h92v165l-46 38-46-38z' fill='#2c58a8' stroke='#e8b830' stroke-width='6' stroke-linejoin='round'/><path d='M32 100l12-26 16 18 16-18 12 26v18H32z' fill='#f5c542' stroke='#a87a10' stroke-width='4' stroke-linejoin='round'/><circle cx='44' cy='70' r='5' fill='#f5c542'/><circle cx='76' cy='70' r='5' fill='#f5c542'/><circle cx='60' cy='58' r='5' fill='#f5c542'/></svg><svg class='deco br' viewBox='0 0 120 230'><rect x='2' y='0' width='116' height='16' rx='6' fill='#a5b0c8' stroke='#5f6c90' stroke-width='3'/><path d='M14 16h92v165l-46 38-46-38z' fill='#2c58a8' stroke='#e8b830' stroke-width='6' stroke-linejoin='round'/><path d='M32 100l12-26 16 18 16-18 12 26v18H32z' fill='#f5c542' stroke='#a87a10' stroke-width='4' stroke-linejoin='round'/><circle cx='44' cy='70' r='5' fill='#f5c542'/><circle cx='76' cy='70' r='5' fill='#f5c542'/><circle cx='60' cy='58' r='5' fill='#f5c542'/></svg><svg class='torch tl' viewBox='0 0 120 170'><g class='flame'><path d='M60 6C84 40 94 58 88 82c-4 20-18 30-28 30S36 102 32 82C28 58 44 44 60 6z' fill='#ff8a1e'/></g><g class='flame b'><path d='M60 36c14 22 22 34 16 52-3 11-9 16-16 16s-13-5-16-16C38 70 48 56 60 36z' fill='#ffd24a'/></g><path d='M24 100h72l-10 34c-2 8-8 12-16 12H50c-8 0-14-4-16-12z' fill='#4a3a6a' stroke='#2a2040' stroke-width='5'/><rect x='18' y='96' width='84' height='12' rx='6' fill='#6a5a8a' stroke='#2a2040' stroke-width='4'/><rect x='44' y='146' width='32' height='20' rx='4' fill='#5a4a7a'/></svg><svg class='torch tr' viewBox='0 0 120 170'><g class='flame'><path d='M60 6C84 40 94 58 88 82c-4 20-18 30-28 30S36 102 32 82C28 58 44 44 60 6z' fill='#ff8a1e'/></g><g class='flame b'><path d='M60 36c14 22 22 34 16 52-3 11-9 16-16 16s-13-5-16-16C38 70 48 56 60 36z' fill='#ffd24a'/></g><path d='M24 100h72l-10 34c-2 8-8 12-16 12H50c-8 0-14-4-16-12z' fill='#4a3a6a' stroke='#2a2040' stroke-width='5'/><rect x='18' y='96' width='84' height='12' rx='6' fill='#6a5a8a' stroke='#2a2040' stroke-width='4'/><rect x='44' y='146' width='32' height='20' rx='4' fill='#5a4a7a'/></svg>
+ <div id="top"><div class="plate"><svg viewBox='0 0 24 24'><path d='M12 2C12 2 5 10 5 15a7 7 0 0 0 14 0C19 10 12 2 12 2z' fill='#6fe3ff' stroke='#15506e' stroke-width='1.5'/><path d='M9 14a3 3 0 0 0 2 3' stroke='#fff' stroke-width='1.5' fill='none' stroke-linecap='round'/></svg><b id="msouls"></b></div><small>Talentbaum – tippe auf ein Talent und kaufe es mit Seelen</small></div>
  <div id="tw"><div id="tree"></div></div>
- <div id="rel"></div>
-<div id="help" style="display:none;max-width:44rem;padding:.6rem 1rem;background:#1c3263;border:.15rem solid #a9c0ee;border-radius:.5rem;font-size:.9rem;line-height:1.35;margin:0 .7rem">🚩 <b>Tippe aufs Schlachtfeld</b>, um den Sammelpunkt zu setzen. Neue Einheiten sammeln sich dort: Tanks vorn, Schützen dahinter, Priester & Katapulte hinten.<br>🤖/🛡/⚔/↩ (Z X C V): Auto, Halten, Angriff, Rückzug. &nbsp; ⚡ Kriegsruf (Q), ☄ Meteor (W, Talent).<br><b>Konter:</b> Speerträger → Wölfe, Reiter → Zauberer, Katapulte → Trolle/Boss, Magier → Skelette. Wölfe jagen Fernkämpfer!<br>Alle 5 Level wählst du einen <b>Segen</b> für den laufenden Durchgang. Aufstieg = Prestige mit dauerhaftem Ruhm.</div>
-<div id="bot"><button class="btn" id="mBack">Zurück zum Spiel</button><button class="btn" id="mRestart">Neustart</button><button class="btn" id="mAsc">⭐ Aufstieg</button><button class="btn" id="mAct">🗺 Akt</button><button class="btn" id="mRel">🏺 Relikte</button><button class="btn" id="mSnd">🔊 Ton</button><button class="btn" id="mShk">📳 Schütteln</button><button class="btn" id="mHelp">❓ Hilfe</button><button class="btn" id="mExp">💾 Export</button><button class="btn" id="mImp">📥 Import</button><button class="btn" id="mWipe">Spielstand löschen</button></div>
+ <div id="panel"><div id="rel"></div><div id="help" style="display:none;max-width:44rem;padding:.6rem 1rem;background:#1c3263;border:.15rem solid #a9c0ee;border-radius:.5rem;font-size:.9rem;line-height:1.35;margin:0 .7rem">🚩 <b>Tippe aufs Schlachtfeld</b>, um den Sammelpunkt zu setzen. Neue Einheiten sammeln sich dort: Tanks vorn, Schützen dahinter, Priester & Katapulte hinten.<br>🤖/🛡/⚔/↩ (Z X C V): Auto, Halten, Angriff, Rückzug. &nbsp; ⚡ Kriegsruf (Q), ☄ Meteor (W, Talent).<br><b>Konter:</b> Speerträger → Wölfe, Reiter → Zauberer, Katapulte → Trolle/Boss, Magier → Skelette. Wölfe jagen Fernkämpfer!<br>Alle 5 Level wählst du einen <b>Segen</b> für den laufenden Durchgang. Aufstieg = Prestige mit dauerhaftem Ruhm.</div><div id="opts"><button class="btn" id="mRestart">Neustart</button><button class="btn" id="mSnd">🔊 Ton</button><button class="btn" id="mShk">📳 Schütteln</button><button class="btn" id="mHelp">❓ Hilfe</button><button class="btn" id="mExp">💾 Export</button><button class="btn" id="mImp">📥 Import</button><button class="btn" id="mWipe">Spielstand löschen</button></div></div>
+ <div id="bot"><button class="btn" id="mMore">⚙ Optionen</button><button class="btn" id="mAct">🗺 Akt</button><button class="btn big" id="mBack">Weiter</button><button class="btn" id="mAsc">⭐ Aufstieg</button><button class="btn" id="mRel">🏺 Relikte</button></div>
 </div>
 <div id="win"><div id="wtxt"></div><div style="display:flex;gap:.7rem;flex-wrap:wrap;justify-content:center"><button class="btn" id="wEnd">♾ Endlos weiterkämpfen</button><button class="btn" id="wNext">➡ Nächster Akt</button></div></div>
 <div id="over"><div id="otxt"></div><button class="btn" id="oTal">🌳 Talentbaum</button><button class="btn" id="oBtn">Neuer Versuch</button></div>
@@ -374,16 +404,24 @@ const TN=[
 ['glory',3,0,'heal',3,200,2,'👑','Ruhmeshalle','Aufstiege geben mehr Ruhm.','Ruhm',10,'%']];
 const tcost=n=>Math.ceil(n[5]*Math.pow(n[6],T(n[0])));
 const tdef=id=>TN.find(n=>n[0]==id);
-function buildTree(){const w=$('#tree');let h='<svg viewBox="0 0 56 58" preserveAspectRatio="none">';
- for(const n of TN)if(n[3]){const p=tdef(n[3]);h+=`<line x1="${p[1]*8+4}" y1="${p[2]*7+3.5}" x2="${n[1]*8+4}" y2="${n[2]*7+3.5}" stroke="${T(n[3])?'#5fd277':'#7d8aa6'}" stroke-width=".3"/>`}
+const BANDS=[[0,'LEGENDE'],[2,'MEISTERSCHAFT'],[4,'AUFBAU'],[6,'FUNDAMENT']];
+function buildTree(){const w=$('#tree'),ctr=n=>[n[1]*8+4,n[2]*7+3.5];
+ let h='<svg viewBox="0 0 56 58" preserveAspectRatio="none"><defs><filter id="gl" x="-30%" y="-30%" width="160%" height="160%"><feGaussianBlur stdDeviation=".4"/></filter></defs>';
+ for(const n of TN)if(n[3]){const p=tdef(n[3]),a=ctr(p),b=ctr(n),on=T(n[3])>0,L=`x1="${a[0]}" y1="${a[1]}" x2="${b[0]}" y2="${b[1]}"`;
+  h+=`<line ${L} stroke="#0f2250" stroke-width=".8" stroke-linecap="round"/>`;
+  h+=on?`<line ${L} stroke="#6fe08c" stroke-width=".7" filter="url(#gl)" opacity=".7"/><line ${L} stroke="${T(n[0])>0?'#e8b830':'#7dee9a'}" stroke-width=".32" stroke-linecap="round"/>`:`<line ${L} stroke="#8793ad" stroke-width=".28" stroke-dasharray=".9 .7" opacity=".8"/>`}
  h+='</svg>';
- for(const n of TN){const r=T(n[0]),lk=n[3]&&!T(n[3]),mx=r>=n[4],c=tcost(n),cls=lk?'lk':mx?'mx':sv.souls>=c?'':'no';
-  h+=`<div class="tn ${cls}" data-id="${n[0]}" style="left:${n[1]*8+1.4}rem;top:${n[2]*7+.9}rem">${lk?'🔒':n[7]}${lk?'':`<span class="r">${r}/${n[4]}</span><span class="c">${c}</span>`}</div>`}
- w.innerHTML=h;if(!buildTree.d){buildTree.d=1;const tw=$('#tw');tw.scrollTop=tw.scrollHeight;tw.scrollLeft=(tw.scrollWidth-tw.clientWidth)/2}$('#msouls').textContent='💧 '+nf(sv.souls)+(sv.glory?'   ⭐ '+sv.glory+' (+'+sv.glory*3+'%)':'')}
+ for(const [r,t] of BANDS)h+=`<div class="rib" style="top:${r*7+.4}rem;height:13rem">${t}</div>`;
+ for(const n of TN){const r=T(n[0]),lk=n[3]&&!T(n[3]),mx=r>=n[4],c=tcost(n),aff=sv.souls>=c,cls=lk?'lk':mx?'mx':aff?'ok':'no',
+   bd=n[4]==1&&n[12]==''?'🔓':n[0]=='auto'?'AUTO':(n[11]>0?'+':'−')+Math.abs(n[11])+n[12].replace(' Stufe','');
+  h+=`<div class="tn ${cls}" data-id="${n[0]}" style="left:${n[1]*8+1.2}rem;top:${n[2]*7+.7}rem"><div class="fr"></div><div class="in"></div><div class="ic">${lk?'🔒':n[7]}</div>${lk?'':`<span class="r">${r}/${n[4]}</span><span class="bd">${bd}</span><span class="c">${nf(c)}</span>`}</div>`}
+ w.innerHTML=h;if(!buildTree.d){buildTree.d=1;const tw=$('#tw');tw.scrollTop=tw.scrollHeight;tw.scrollLeft=(tw.scrollWidth-tw.clientWidth)/2}$('#msouls').textContent=nf(sv.souls)+(sv.glory?'   ⭐ '+sv.glory+' (+'+sv.glory*3+'%)':'')}
+function popNode(id){const e=document.querySelector(`.tn[data-id=${id}]`);if(!e)return;e.classList.add('pop');for(let i=0;i<10;i++){const sp=document.createElement('i');sp.className='sp';const a=i/10*6.28;sp.style.setProperty('--dx',Math.cos(a)*3.2+'rem');sp.style.setProperty('--dy',Math.sin(a)*3.2+'rem');e.appendChild(sp);setTimeout(()=>sp.remove(),650)}}
 let tsel=null;
-function tip(el){const n=tdef(el.dataset.id),r=T(n[0]),f=v=>(v>0&&n[11]>0&&n[12]!='%/s'?'+':'')+(n[0]=='auto'?(v?[0,6,3.5,2][v]:'aus'):v*n[11])+n[12];const t=$('#tip');
- t.innerHTML=`<h4>${n[8]}</h4>${n[9]}<div>${n[10]}: ${f(r)}${r<n[4]?' → <span style="color:#8f8">'+f(r+1)+'</span>':' (Max)'}</div>`;t.style.display='block';const b=el.getBoundingClientRect();let x=b.right+10;if(x+t.offsetWidth>innerWidth)x=b.left-t.offsetWidth-10;t.style.left=Math.max(4,x)+'px';t.style.top=Math.min(innerHeight-t.offsetHeight-4,Math.max(4,b.top))+'px'}
-function tbuy(id){const n=tdef(id);if(T(id)>=n[4]||(n[3]&&!T(n[3])))return;const c=tcost(n);if(sv.souls<c)return;sv.souls-=c;sv.t[id]=T(id)+1;save();buildTree();const e=document.querySelector(`.tn[data-id=${id}]`);if(e)tip(e)}
+function tip(el){const n=tdef(el.dataset.id),r=T(n[0]),lk=n[3]&&!T(n[3]),f=v=>(v>0&&n[11]>0&&n[12]!='%/s'?'+':'')+(n[0]=='auto'?(v?[0,6,3.5,2][v]:'aus'):v*n[11])+n[12],t=$('#tip');
+ t.innerHTML=`<h4>${n[7]} ${n[8]}</h4><p>${n[9]}</p><div class="ef">${n[10]}: ${f(r)}${r<n[4]?' <i>➜</i> <b>'+f(r+1)+'</b>':' <b>(Max)</b>'}</div>`+(lk?`<div class="rq">🔒 Benötigt: ${tdef(n[3])[8]}</div>`:r<n[4]?`<div class="co">Kosten: <b>${nf(tcost(n))}</b> 💧 · Rang ${r}/${n[4]}</div>`:'');
+ t.style.display='block';const b=el.getBoundingClientRect();let x=b.right+12;if(x+t.offsetWidth>innerWidth)x=b.left-t.offsetWidth-12;t.style.left=Math.max(4,x)+'px';t.style.top=Math.min(innerHeight-t.offsetHeight-4,Math.max(4,b.top-10))+'px'}
+function tbuy(id){const n=tdef(id);if(T(id)>=n[4]||(n[3]&&!T(n[3])))return;const c=tcost(n);if(sv.souls<c)return;sv.souls-=c;sv.t[id]=T(id)+1;save();buildTree();popNode(id);sfx('ding');const e=document.querySelector(`.tn[data-id=${id}]`);if(e)tip(e)}
 $('#tree').addEventListener('pointerover',e=>{if(e.pointerType!='mouse')return;const el=e.target.closest('.tn');if(el)tip(el)});
 $('#tree').addEventListener('pointerout',e=>{if(e.pointerType=='mouse')$('#tip').style.display='none'});
 $('#tree').addEventListener('click',e=>{const el=e.target.closest('.tn');if(!el)return;const id=el.dataset.id;if(e.pointerType=='mouse'||e.detail==0||tsel==id){tbuy(id)}else{tsel=id;tip(el)}});
@@ -398,6 +436,8 @@ $('#mSnd').onclick=()=>{sv.opt.sound^=1;optBtn();sfx('click');save()};$('#mShk')
 const actBtn=()=>{$('#mAct').textContent='🗺 Akt '+(sv.act+1)+(sv.act<sv.actMax?' ▸':'')+' (Boss L'+(10+5*sv.act)+')'};
 $('#mAct').onclick=()=>{sv.act=sv.act>=sv.actMax?0:sv.act+1;actBtn();toast('Akt '+(sv.act+1)+' gilt ab dem nächsten Durchgang (Neustart)');save()};
 $('#mRel').onclick=()=>{const r=$('#rel');if(r.style.display=='grid'){r.style.display='none';return}r.innerHTML=RELICS.map(x=>`<div>${x[1]} <b>${x[2]}</b> Stufe ${sv.rel[x[0]]|0}<br><small>${x[3]} (aktuell ${Math.round((sv.rel[x[0]]|0)*x[4]*1000)/10}%)</small></div>`).join('')+'<div style="grid-column:1/-1"><small>Relikte fallen von Bossen (alle 5 Level) und beim Sieg über einen Akt.</small></div>';r.style.display='grid'};
+$('#mMore').onclick=()=>{const o=$('#opts');o.style.display=o.style.display=='flex'?'none':'flex'};
+{const tw=$('#tw');let dr=null;tw.addEventListener('pointerdown',e=>{if(e.pointerType!='mouse'||e.target.closest('.tn'))return;dr={x:e.clientX,y:e.clientY,l:tw.scrollLeft,t:tw.scrollTop};tw.style.cursor='grabbing'});addEventListener('pointermove',e=>{if(dr){tw.scrollLeft=dr.l-(e.clientX-dr.x);tw.scrollTop=dr.t-(e.clientY-dr.y)}});addEventListener('pointerup',()=>{dr=null;tw.style.cursor='grab'})}
 $('#mHelp').onclick=()=>{const h=$('#help');h.style.display=h.style.display=='none'?'block':'none'};
 $('#mExp').onclick=()=>{save();const t=btoa(unescape(encodeURIComponent(JSON.stringify(sv))));try{navigator.clipboard.writeText(t).then(()=>toast('Spielstand in Zwischenablage kopiert'),()=>prompt('Spielstand kopieren:',t))}catch(e){prompt('Spielstand kopieren:',t)}};
 $('#mImp').onclick=()=>{const t=prompt('Spielstand-Code einfügen:');if(!t)return;try{const o=JSON.parse(decodeURIComponent(escape(atob(t.trim()))));if(!o||typeof o!='object'||(o.ver||1)>2)throw 0;localStorage.setItem(SAVE,JSON.stringify(o));location.reload()}catch(e){toast('Ungültiger Code')}};
