@@ -1179,7 +1179,7 @@ addIcon('v_mega',vIc('#e84a4a','#a82a2a',[['M14 46L22 26L34 46Z','#e0a020'],['M5
 addIcon('d_quake',[[ell(64,88,50,18),'#6a5a48'],['M64 8L84 72H44Z','#c3ccdc'],['M20 70L40 52M108 70L88 52M14 90H114','#ffd54a',{nf:1,w:6}]]);
 addIcon('d_plasma',[[cir(64,64,44),'#c040d8'],[cir(64,64,30),'#ff8aff',{s:0}],[cir(64,64,14),'#fff',{s:0}],['M64 6V122M6 64H122','#5fe8ff',{nf:1,w:4}]]);
 // ---------- Daten ----------
-const WW=100,WR=700;
+const GY=24,X0=34,BASEX=30;let WW=300,WR=60,LEN=90,XE=124,PW=36,PHT=16,pileTotal=1,pileLeft=1,INR=null;
 const ORES=[['Kupfer','#e8803a',1,1,4,2,.72,'d0'],['Eisen','#c3ccdc',1.4,1,9,8,.74,'d1'],['Silber','#e8f0ff',1.8,1,22,20,.77,'d2'],['Gold','#ffd54a',2.2,1,55,35,.79,'d3'],['Rubin','#ff4a5a',3,1,140,60,.82,'d4'],['Saphir','#4ea8ff',3.5,1,380,90,.84,'d5'],['Smaragd','#4bdc6a',4.5,2,1100,130,.85,'d6'],['Diamant','#bff4ff',6,1,4000,190,.87,'d7'],['Seelenstein','#ff5aff',8,2,16000,260,.89,'d8'],['Fossil','#d8c8a0',2,3,60,5,.93,'d9']];
 const HARD=[0,1,2.5,6,14,30];
 const WORLDS=[{n:'Rotwüste',ic:'d0',sky:['#3a1850','#9a3e68','#e8806a'],sun:['#ffe0a0cc','#ff9a6a55'],mt:['#6a2a58','#4a1c46','#33153a'],pal:['#a8793f','#8a7058','#6e5a66','#4a4650','#3a6a7a'],bg:'#3a2a22',price:1,hard:1,od:1,lava:1,gas:1},
@@ -1187,6 +1187,7 @@ const WORLDS=[{n:'Rotwüste',ic:'d0',sky:['#3a1850','#9a3e68','#e8806a'],sun:['#
 {n:'Eishöhlen',ic:'d5',sky:['#102850','#3a78b8','#b8e8ff'],sun:['#e0f8ffcc','#80c0ff55'],mt:['#7ab0d8','#5a90c0','#3a6a98'],pal:['#9ac8e0','#7ab0d0','#6a98c0','#5078a8','#3a5a90'],bg:'#1a2a40',price:3.2,hard:2.6,od:.7,lava:.3,gas:.5},
 {n:'Vulkan',ic:'d4',sky:['#200808','#7a1a10','#ff8a30'],sun:['#ffd070dd','#ff602066'],mt:['#4a1a18','#34100e','#220808'],pal:['#6a3a30','#5a2e28','#4a2420','#3a1a18','#2a1010'],bg:'#180a08',price:6,hard:4,od:.55,lava:2.6,gas:1.2},
 {n:'Kristallwelt',ic:'d8',sky:['#1a0a3a','#5a2a9a','#e07aff'],sun:['#ffd0ffcc','#c070ff55'],mt:['#8a4ac0','#6a2aa0','#4a1a80'],pal:['#7a5ab0','#6a4aa0','#5a3a90','#4a2a80','#3a1a70'],bg:'#1a1030',price:12,hard:7,od:.4,lava:1,gas:1}],WU=[0,40,90,150,220];
+const WB=(()=>{const c={};return()=>{const i=DG.world|0;if(!c[i]){const w=WORLDS[i%5],t=Math.floor(i/5);c[i]=Object.assign({},w,{n:w.n+(t?' '+['','II','III'][t]:''),price:w.price*(1+t*5),hard:w.hard*(1+t*3.2)})}return c[i]}})(),atBase=()=>M.x<X0-.8,pileOre=()=>Math.min(8,2+Math.floor((DG.world|0)*.6));
 const VEH=[['Bohr-Truck','d_truck',0,{},'#e0a63a','#c88a24'],['Bagger','v_dig',1500,{pow:1.6,eng:.8,cap:1.3},'#e8c020','#b89000'],['Panzer-Bohrer','v_tank',9000,{hp:2.2,pow:1.3,eng:.7,fuel:1.3},'#6a8a5a','#4a6a3a'],['Jet-Rover','v_jet',45000,{eng:1.6,fuel:1.5,cap:1.2},'#4a9ae8','#2a6ac0'],['Laser-Rover','v_laser',2e5,{pow:2,cap:1.5,light:1.3},'#c04ad8','#8a2ab0'],['Mega-Maschine','v_mega',1.5e6,{pow:3,hp:2.5,fuel:2,cap:2,eng:1.4,light:1.4},'#e84a4a','#a82a2a']];
 const TOOLS=[['Bohrkopf','d_drill',0,'Standard: bohrt ein Feld.'],['Laserkopf','m_laser',2000,'Durchschlägt 4 Felder in einer Linie.'],['Rammbohrer','d_quake',15000,'Bricht auch alle 8 Nachbarfelder an.'],['Plasmakegel','d_plasma',120000,'Breiter Strahl: 5 Felder in der Breite.'],['Sprengbohrer','d_nuke',600000,'Gebrochene Felder explodieren oft (kein Eigenschaden).']];
 const LINES={drill:['Bohrer','d_drill',[0,70,300,1400,7000,35000,18e4,9e5,5e6],[1,1.7,2.8,4.6,8,14,26,48,90],['Rostiger Bohrer','Stahlbohrer','Hartmetallbohrer','Titanbohrer','Diamantbohrer','Plasmabohrer','Laserlanze','Quantenbohrer','Antimaterie-Bohrer'],'Bohrkraft'],
@@ -1214,8 +1215,8 @@ for(let r=0;r<5;r++)NODES.push({id:'S'+r,x:0,y:r,hub:1,icon:'d_lab',name:'Forsch
 for(const[r,sd,nm,ic,ns]of BR)ns.forEach((n,t)=>NODES.push({id:'B'+r+sd+t,x:sd*(t+1),y:r,icon:ic,name:n[0],desc:n[1],cost:Math.ceil(RPC[t]*RPM[r]),req:t?'B'+r+sd+(t-1):'S'+r,fx:n[2],branch:nm}));
 const STN=[.12,.09,.05,.03,.012,.006,.003,.0015,.0006],STC=[60,200,900,4000,2e4,1e5,6e5,3e6,2e7];
 // ---------- Zustand ----------
-sv.dig=Object.assign({world:0,veh:0,tool:0,ownV:{0:1},ownT:{0:1},cash:30,rp:0,up:{},rs:{},stn:{},cons:{},cargo:{},fuel:null,hull:null,rec:0,cores:0,lab:0,ctr:[],mined:{},last:Date.now()},sv.dig||{});
-const DG=sv.dig;DG.ownV=DG.ownV||{0:1};DG.ownT=DG.ownT||{0:1};DG.up=DG.up||{};DG.rs=DG.rs||{};DG.stn=DG.stn||{};DG.cons=DG.cons||{};DG.cargo=DG.cargo||{};DG.mined=DG.mined||{};
+sv.dig=Object.assign({lmax:0,pile:{},world:0,veh:0,tool:0,ownV:{0:1},ownT:{0:1},cash:30,rp:0,up:{},rs:{},stn:{},cons:{},cargo:{},fuel:null,hull:null,rec:0,cores:0,lab:0,ctr:[],mined:{},last:Date.now()},sv.dig||{});
+const DG=sv.dig;DG.pile=DG.pile||{};DG.ownV=DG.ownV||{0:1};DG.ownT=DG.ownT||{0:1};DG.up=DG.up||{};DG.rs=DG.rs||{};DG.stn=DG.stn||{};DG.cons=DG.cons||{};DG.cargo=DG.cargo||{};DG.mined=DG.mined||{};
 let SC=null;const calcS=()=>{const a={dmg:0,sell:0,blast:0,collect:0,stn:0,rare:0,chest:0,rp:0,fossilrp:0,feff:0,fall:0,lava:0,save:0,scan:0,offline:2,cap:Object.assign({},LSTART),f:{}};for(const n of NODES)if(DG.rs[n.id]){const e=n.fx;if(e[0]=='cap')a.cap[e[1]]+=e[2];else if(e[0]=='mul'||e[0]=='add')a[e[1]]+=e[2];else a.f[e[1]]=1}return a};
 const SS=()=>SC||(SC=calcS()),CM=()=>1+.2*DG.cores;
 const tier=l=>Math.min(DG.up[l]|0,LINES[l][2].length-1),LV=l=>LINES[l][3][tier(l)];
@@ -1226,40 +1227,49 @@ let WT,DM,seed=1;
 const h2=(x,y,s)=>{let n=Math.imul(x|0,374761393)+Math.imul(y|0,668265263)+Math.imul(s|0,1013904223);n=Math.imul(n^(n>>>13),1274126177);return((n^(n>>>16))>>>0)/4294967296};
 const sm=t=>t*t*(3-2*t);
 function vn(x,y,s){const xi=Math.floor(x),yi=Math.floor(y),fx=sm(x-xi),fy=sm(y-yi),a=h2(xi,yi,s),b=h2(xi+1,yi,s),c=h2(xi,yi+1,s),d=h2(xi+1,yi+1,s);return a+(b-a)*fx+(c-a)*fy+(a-b-c+d)*fx*fy}
-const layerOf=y=>y<14?0:y<45?1:y<95?2:y<170?3:4;
-function genWorld(){seed=(R()*1e9)|0;WT=new Uint8Array(WW*WR);DM=new Float32Array(WW*WR);const s=SS();
+const layerOf=x=>Math.max(0,Math.min(4,Math.floor((x-X0)/Math.max(1,LEN)*5)));
+function genWorld(){const lv=DG.world|0,s=SS(),W=WB();seed=(R()*1e9)|0;LEN=90+9*lv;XE=X0+LEN;PW=36+2*lv;PHT=16+lv;WW=XE+4+PW+14;WR=GY+30;WT=new Uint8Array(WW*WR);DM=new Float32Array(WW*WR);INR=new Uint8Array(WW*WR);
+ const cx=XE+4+PW/2,hw=PW/2,pl=[];
  for(let y=0;y<WR;y++)for(let x=0;x<WW;x++){const i=y*WW+x;if(x==0||x==WW-1||y==WR-1){WT[i]=99;continue}
-  let t=layerOf(y+((vn(x*.3,y*.3,seed+3)-.5)*8|0))+1;if(y<2)t=1;
-  let cave=false;if(y>5){const v=vn(x*.11,y*.11,seed+5);if(v>.8-Math.min(.05,y/4000)){t=0;cave=true}}
-  if(cave&&y>40&&vn(x*.2,y*.2,seed+9)>.7-.12*(WORLDS[DG.world].lava-1))t=30;
+  const plateau=x>=X0&&x<XE&&y<GY,floor=y>=GY,hh=Math.abs(x-cx)<hw?PHT*Math.sqrt(1-((x-cx)/hw)*((x-cx)/hw)):0;
+  if(y<GY&&hh>0&&y>=GY-hh){WT[i]=40;pl.push(i);continue}
+  if(!plateau&&!floor)continue;INR[i]=1;
+  const dist=Math.max(0,x-X0)*.8+Math.max(0,y-GY)*1.6;let t=layerOf(x)+1;if(floor&&y>GY+10)t=Math.min(5,t+1);if(floor&&x<X0)t=1;
+  let cave=false;if((plateau||(floor&&y>GY+2&&x>=X0))&&dist>6){const v=vn(x*.11,y*.11,seed+5);if(v>.82-Math.min(.05,dist/4000)){t=0;cave=true}}
+  if(cave&&dist>30&&vn(x*.2,y*.2,seed+9)>.7-.12*(W.lava-1))t=30;
   if(t>0&&t<6){
-   if(y>24&&h2(x,y,seed+11)>1-.008*WORLDS[DG.world].gas)t=31;
-   else{let o=-1;for(let k=8;k>=0;k--){const O=ORES[k];if(y>=O[5]*WORLDS[DG.world].od&&vn(x*.45+k*31,y*.45+k*17,seed+20+k)>O[6]-s.rare*.05-Math.min(.05,(y-O[5])/1500)){o=k;break}}
-    if(o>=0)t=10+o;else{const r=h2(x,y,seed+13);if(y>5&&r>.992-s.chest*.004)t=19;else if(y>12&&r<.0012*(1+s.chest))t=20}}}
-  WT[i]=t}}
+   if(dist>24&&h2(x,y,seed+11)>1-.008*W.gas)t=31;
+   else{let o=-1;for(let k=8;k>=0;k--){const O=ORES[k];if(dist>=O[5]*W.od*.35&&vn(x*.45+k*31,y*.45+k*17,seed+20+k)>O[6]-s.rare*.05-Math.min(.05,(dist-O[5]*.35)/600)){o=k;break}}
+    if(o>=0)t=10+o;else{const r=h2(x,y,seed+13);if(dist>4&&r>.992-s.chest*.004)t=19;else if(dist>8&&r<.0012*(1+s.chest))t=20}}}
+  WT[i]=t}
+ pl.sort((a,b)=>(a%WW)-(b%WW));const k=Math.floor((DG.pile[lv]||0)*pl.length);for(let j=0;j<k;j++)WT[pl[j]]=0;pileTotal=pl.length;pileLeft=pl.length-k}
 const idx=(x,y)=>y*WW+x;
-const hardOf=(i)=>{const t=WT[i],y=(i/WW)|0;let b=t;if(t>=10)b=layerOf(y)+1;if(t==31||t==20)b=layerOf(y)+1;const o=t>=10&&t<20?ORES[t-10][2]:1;return HARD[Math.min(5,b)]*o*(1+y/150)*WORLDS[DG.world].hard};
-const solid=(x,y)=>{if(x<0||x>=WW)return 1;if(y<0)return 0;if(y>=WR)return 1;const t=WT[y*WW+x];return t!=0&&t!=30};
+const hardOf=(i)=>{const t=WT[i],x=i%WW;if(t==40)return 1.5*WB().hard*(1+(DG.world|0)*.1);let b=t;if(t>=10)b=layerOf(x)+1;if(t==31||t==20)b=layerOf(x)+1;const o=t>=10&&t<20?ORES[t-10][2]:1;return HARD[Math.min(5,b)]*o*(1+Math.max(0,x-X0)/150)*WB().hard};
+const solid=(x,y)=>{if(x<0||x>=WW)return 1;if(y<0)return 1;if(y>=WR)return 1;const t=WT[y*WW+x];return t!=0&&t!=30};
 const used=()=>{let u=0;for(let i=0;i<9;i++)u+=(DG.cargo[i]|0)*ORES[i][3];u+=(DG.cargo[9]|0)*ORES[9][3];return u};
-const price=i=>WORLDS[DG.world].price*ORES[i][4]*(1+SS().sell)*CM()*(M.mk[i]||1)*(M.ev&&M.ev.i==i?2:1);
+const price=i=>WB().price*ORES[i][4]*(1+SS().sell)*CM()*(M.mk[i]||1)*(M.ev&&M.ev.i==i?2:1);
 function flt(x,y,t,c){M.fl.push({x,y,t,c,l:1.1})}
 function boom(x,y,col,n,sp,g){for(let i=0;i<n;i++){const a=R()*6.283,v=(.2+R())*sp;M.P.push({x,y,vx:Math.cos(a)*v,vy:Math.sin(a)*v-(g?sp*.2:0),l:.4+R()*.6,L:1,c:col,s:1+R()*2.2,g:g||0})}}
-function addOre(i,n){const w=ORES[i][3]*n;if(used()+w>VS().cap){flt(M.x,M.y-1.2,'VOLL!','#ff5a5a');return false}DG.cargo[i]=(DG.cargo[i]|0)+n;DG.mined[i]=(DG.mined[i]|0)+n;M.trip.ores+=n;if(i==9){const r=(1+M.y/60)*(1+SS().fossilrp)*(1+SS().rp);DG.rp+=r;flt(M.x,M.y-1.6,'+'+r.toFixed(1)+' FP','#6fe0ff')}return true}
-function breakTile(i,src){const t=WT[i],x=i%WW,y=(i/WW)|0;if(t==0||t==99||t==30)return;WT[i]=0;DM[i]=0;const wx=x+.5,wy=y+.5,col=['','#a8793f','#8a7058','#6e5a66','#4a4650','#3a6a7a'][layerOf(y)+1]||'#8a7058';boom(wx,wy,col,5,5,1);
+function addOre(i,n){const w=ORES[i][3]*n;if(used()+w>VS().cap){flt(M.x,M.y-1.2,'VOLL!','#ff5a5a');return false}DG.cargo[i]=(DG.cargo[i]|0)+n;DG.mined[i]=(DG.mined[i]|0)+n;M.trip.ores+=n;if(i==9){const r=(1+Math.max(0,M.x-X0)/30)*(1+SS().fossilrp)*(1+SS().rp);DG.rp+=r;flt(M.x,M.y-1.6,'+'+r.toFixed(1)+' FP','#6fe0ff')}return true}
+function breakTile(i,src){const t=WT[i],x=i%WW,y=(i/WW)|0;if(t==0||t==99||t==30)return;WT[i]=0;DM[i]=0;const wx=x+.5,wy=y+.5,col=['','#a8793f','#8a7058','#6e5a66','#4a4650','#3a6a7a'][layerOf(x)+1]||'#8a7058';boom(wx,wy,col,5,5,1);
  if(t>=10&&t<19){const o=t-10;if(src=='drill'){if(addOre(o,1)){flt(wx,wy-.5,'+1 '+ORES[o][0],ORES[o][1]);boom(wx,wy,ORES[o][1],8,4)}}else M.pk.push({o,x:wx,y:wy,vx:(R()-.5)*3,vy:-R()*3,t:0})}
  else if(t==19){if(addOre(9,1)){flt(wx,wy-.5,'FOSSIL!','#ffe9a8');boom(wx,wy,'#fff3c0',14,5)}}
- else if(t==20){const c=Math.ceil((20+y*6)*(1+R())*CM());DG.cash+=c;DG.rp+=1+y/40;M.trip.cash+=c;flt(wx,wy-.5,'TRUHE! +$'+fmt(c),'#ffd54a');boom(wx,wy,'#ffd54a',30,7);sfx('ding');if(R()<.4){const k=R()<.7?'dyn':'rep';DG.cons[k]=(DG.cons[k]|0)+1;flt(wx,wy-1.3,'+1 '+CONS[k][0],'#fff')}}
+ else if(t==40){const o=pileOre();M.pk.push({o,x:wx,y:wy,vx:(R()-.5)*6,vy:-R()*6,t:0,cash:1});boom(wx,wy,ORES[o][1],5,7,1);pileLeft--;DG.pile[DG.world|0]=1-pileLeft/pileTotal;if(pileLeft<=0)levelClear()}
+ else if(t==20){const c=Math.ceil((20+Math.max(0,x-X0)*.7)*(1+R())*CM()*WB().price);DG.cash+=c;DG.rp+=1+Math.max(0,x-X0)/50;M.trip.cash+=c;flt(wx,wy-.5,'TRUHE! +$'+fmt(c),'#ffd54a');boom(wx,wy,'#ffd54a',30,7);sfx('ding');if(R()<.4){const k=R()<.7?'dyn':'rep';DG.cons[k]=(DG.cons[k]|0)+1;flt(wx,wy-1.3,'+1 '+CONS[k][0],'#fff')}}
  else if(t==31){setTimeout(()=>explode(wx,wy,2.6,'gas'),120)}}
 function explode(cx,cy,r,kind){const s=SS();r*= (1+s.blast);const R0=Math.ceil(r);let n=0;
  for(let y=Math.max(0,Math.floor(cy)-R0);y<=Math.min(WR-2,Math.floor(cy)+R0);y++)for(let x=Math.max(1,Math.floor(cx)-R0);x<=Math.min(WW-2,Math.floor(cx)+R0);x++){const d=Math.hypot(x+.5-cx,y+.5-cy);if(d>r)continue;const i=y*WW+x,t=WT[i];if(t==0||t==99)continue;if(t==30){WT[i]=0;continue}
-  if(t>=10&&t<19){const o=t-10;if(R()<.55+s.collect)M.pk.push({o,x:x+.5,y:y+.5,vx:0,vy:0,t:-R()*.25});WT[i]=0;n++}else if(t==19||t==20){breakTile(i,'bomb')}else if(t==31){WT[i]=0;setTimeout(()=>explode(x+.5,y+.5,2.6,'gas'),140+R()*120)}else{WT[i]=0;n++}DM[i]=0;if(n<90&&R()<.5)boom(x+.5,y+.5,['#a8793f','#8a7058','#6e5a66','#4a4650','#3a6a7a'][layerOf(y)],2,6,1)}
+  if(t>=10&&t<19){const o=t-10;if(R()<.55+s.collect)M.pk.push({o,x:x+.5,y:y+.5,vx:0,vy:0,t:-R()*.25});WT[i]=0;n++}else if(t==19||t==20||t==40){breakTile(i,'bomb')}else if(t==31){WT[i]=0;setTimeout(()=>explode(x+.5,y+.5,2.6,'gas'),140+R()*120)}else{WT[i]=0;n++}DM[i]=0;if(n<90&&R()<.5)boom(x+.5,y+.5,['#a8793f','#8a7058','#6e5a66','#4a4650','#3a6a7a'][layerOf(x)],2,6,1)}
  for(let k=0;k<26;k++){const a=R()*6.283,v=R()*r*5;M.P.push({x:cx,y:cy,vx:Math.cos(a)*v,vy:Math.sin(a)*v,l:.5+R()*.5,L:1,c:R()<.5?'#ffb04a':'#ff6a2a',s:3+R()*4,g:0,add:1})}
  M.P.push({ring:1,x:cx,y:cy,l:.5,L:.5,r:r,c:'#ffd070'});M.shk=Math.max(M.shk,Math.min(1.6,r/3));M.flash=Math.max(M.flash,Math.min(.7,r/10));sfx('boom',Math.min(1,r/4));try{navigator.vibrate&&navigator.vibrate(60)}catch(e){}
  const d=Math.hypot(M.x-cx,M.y-cy);if(d<r*.9&&kind!='tool'){const dm=r*6*(1-d/(r*.9))*(kind=='gas'?1.2:1);hurt(dm)}}
+function levelClear(){const L=DG.world|0,first=L>=DG.lmax;DG.pile[L]=0;const b=Math.ceil(4000*Math.pow(2.3,L)*CM());DG.cash+=b;DG.rp+=15*(L+1);M.flash=1;M.shk=1.8;explode(M.x+4,M.y-3,9,'tool');sfx('ding');sfx('horn');if(first&&L<14)DG.lmax=L+1;
+ toast(first?'🏆 LEVEL GESCHAFFT! Bonus $'+fmt(b)+(L<14?' · Level '+(L+2)+' freigeschaltet':''):'Haufen abgebaut! Bonus $'+fmt(b));
+ setTimeout(()=>{if(first&&L<14)DG.world=L+1;M.pk=[];M.B=[];toSurface()},1800)}
 function hurt(d){M.hull-=d;M.dmgT=.4;M.shk=Math.max(M.shk,.4);flt(M.x,M.y-1,'-'+Math.ceil(d),'#ff5a5a');if(M.hull<=0)destroyed()}
 function emergency(kind){const s=SS(),loss=kind=='dead'?.7:Math.max(.1,.4-s.save);for(let i=0;i<10;i++)DG.cargo[i]=Math.floor((DG.cargo[i]|0)*(1-loss));if(kind=='dead')DG.cash=Math.floor(DG.cash*.95);toSurface();M.hull=Math.max(M.hull,VS().hp*.4);M.fuel=Math.max(M.fuel,VS().fuel*.3);toast(kind=='dead'?'Fahrzeug zerstört! Notrettung: '+Math.round(loss*100)+'% Fracht verloren':'Notrettung! '+Math.round(loss*100)+'% Fracht verloren')}
 function destroyed(){boom(M.x,M.y,'#ff8a3a',60,9);M.shk=1.6;sfx('boom');emergency('dead')}
-function toSurface(){M.x=Math.max(2,Math.min(WW-3,M.x));if(M.x>41&&M.x<68)M.x=40;M.y=-.7;M.vx=M.vy=0;M.under=0;M.stuck=0;newTrip()}
+function toSurface(){M.x=BASEX;M.y=GY-.7;M.vx=M.vy=0;M.under=0;M.stuck=0;newTrip()}
 function newTrip(){const v=VS();if(M.rec>0&&M.trip.ores+M.trip.cash>0)toast('Expedition beendet: '+Math.round(M.rec*2)+' m tief, '+M.trip.ores+' Erze');M.trip={ores:0,cash:0};M.pk=[];M.B=[];genWorld();if(DG.fuel==null)DG.fuel=v.fuel;DG.cash=Math.floor(DG.cash)}
 // ---------- Physik ----------
 const VWD=1.7,VHT=1.05;
@@ -1282,24 +1292,24 @@ function step(dt){const v=VS(),s=SS();M.t+=dt;M.shk*=Math.exp(-dt*4);M.flash*=Ma
  M.y+=M.vy*dt;M.gnd=0;{const l=M.x-VWD/2,r=M.x+VWD/2,t=M.y-VHT/2,b=M.y+VHT/2;const dir=M.vy>0?1:-1;const ty=dir>0?Math.floor(b):Math.floor(t);let hit=0,tiles=[];for(let tx=Math.floor(l);tx<=Math.floor(r-1e-3);tx++)if(solid(tx,ty)){hit=1;tiles.push([tx,ty])}
   if(hit){if(dir>0){M.y=ty-VHT/2-1e-3;M.gnd=1;const fv=M.vy;if(fv>13){hurt((fv-13)*6*(1-s.fall));boom(M.x,M.y+.5,'#c8a060',10,5,1);sfx('thud')}if(iy>.3&&canAct)dr=tiles;}else{M.y=ty+1+VHT/2+1e-3}M.vy=0}
   else if(iy>.3&&canAct&&dir>0&&M.gnd==0){}}
- if(M.y<-.5&&M.gnd==0&&M.y>-.6)M.gnd=0;
+ 
  // Bohren
  if(dr&&canAct){M.drilling=1;M.fuel-=1.1*(1+.25*DG.tool)*fe*dt;let first=1;for(const[tx,ty,wt]of mkList(dr)){if(tx<1||tx>=WW-1||ty<0||ty>=WR-1)continue;const i=idx(tx,ty),t=WT[i];if(t==99)continue;DM[i]+=v.pow*dt*wt/hardOf(i);if(DM[i]>=1){breakTile(i,'drill');sfx('hit',.5);if(DG.tool==4&&R()<.12)explode(tx+.5,ty+.5,1.8,'tool')}
    if(first&&R()<.5){first=0;const dx=M.aim[0],dy=M.aim[1];M.P.push({x:M.x+dx*VWD*.55,y:M.y+dy*VHT*.6,vx:-dx*4+(R()-.5)*5,vy:-dy*4+(R()-.5)*5-1,l:.3,L:.4,c:R()<.5?'#ffd070':'#fff',s:1.2,add:1})}}
   if(R()<.35)sfx('hit',.25)}
  // Hazards
- const ty0=Math.floor(M.y),tx0=Math.floor(M.x);if(ty0>=0&&ty0<WR&&WT[idx(tx0,ty0)]==30){hurt(34*dt*(1-s.lava)*(100/Math.max(100,v.hp)*0+1));boom(M.x,M.y,'#ff6a2a',1,3)}
- const depthM=Math.max(0,M.y*2);if(depthM>v.cool)hurt((depthM-v.cool)*.012*dt*(1-.5*0));
- if(M.y>1.5)M.under=1;if(M.under&&M.y<-.1){M.under=0;newTrip();onSurface()}
- if(M.y*2>M.rec*2){M.rec=Math.max(M.rec,M.y);const r2=Math.floor(M.y*2);if(r2>DG.rec){const prevM=Math.floor(DG.rec/25);DG.rec=r2;if(Math.floor(r2/25)>prevM){const b=Math.ceil(r2*3*CM());DG.cash+=b;flt(M.x,M.y-2,'REKORD '+r2+' m! +$'+fmt(b),'#9ae8ff');sfx('ding')}}}
+ const ty0=Math.floor(M.y),tx0=Math.floor(M.x);if(ty0>=0&&ty0<WR&&tx0>=0&&tx0<WW&&WT[idx(tx0,ty0)]==30){hurt(34*dt*(1-s.lava)*(100/Math.max(100,v.hp)*0+1));boom(M.x,M.y,'#ff6a2a',1,3)}
+ const depthM=Math.max(0,((M.x-X0)+Math.max(0,M.y-GY)*1.5)*2)*(1+Math.floor((DG.world|0)/5)*.8);if(depthM>v.cool)hurt((depthM-v.cool)*.012*dt*(1-.5*0));
+ if(M.x>X0+3)M.under=1;if(M.under&&atBase()){M.under=0;newTrip()}
+ if((M.x-X0)>M.rec){M.rec=Math.max(M.rec,M.x-X0);const r2=Math.floor((M.x-X0)*2);if(r2>DG.rec){const prevM=Math.floor(DG.rec/25);DG.rec=r2;if(Math.floor(r2/25)>prevM){const b=Math.ceil(r2*3*CM());DG.cash+=b;flt(M.x,M.y-2,'REKORD '+r2+' m! +$'+fmt(b),'#9ae8ff');sfx('ding')}}}
  M.fuel=Math.max(0,Math.min(v.fuel,M.fuel));DG.fuel=M.fuel;DG.hull=M.hull;
- if(M.fuel<=0.01&&M.y>1){M.stuck+=dt;if(M.stuck>5){M.stuck=0;emergency('fuel')}}else M.stuck=0;
+ if(M.fuel<=0.01&&!atBase()){M.stuck+=dt;if(M.stuck>5){M.stuck=0;emergency('fuel')}}else M.stuck=0;
  // Bomben
  for(let i=M.B.length-1;i>=0;i--){const b=M.B[i];b.fuse-=dt;if(!b.st){b.vy+=12*dt;const nx=b.x+b.vx*dt,ny=b.y+b.vy*dt;if(solid(Math.floor(nx),Math.floor(ny))){b.st=1;b.fuse=Math.min(b.fuse,.8)}else{b.x=nx;b.y=ny}}
   if(b.fuse<=0){explode(b.x,b.y,b.r,'bomb');M.B.splice(i,1)}}
  // Beute
  for(let i=M.pk.length-1;i>=0;i--){const p=M.pk[i];p.t+=dt;if(p.t<0)continue;const dx=M.x-p.x,dy=M.y-p.y,d=Math.hypot(dx,dy)||1,f=Math.min(40,10+p.t*50);p.vx+=dx/d*f*dt*3;p.vy+=dy/d*f*dt*3;p.vx*=Math.exp(-dt*3);p.vy*=Math.exp(-dt*3);p.x+=p.vx*dt;p.y+=p.vy*dt;
-  if(d<.9){if(addOre(p.o,1)){boom(p.x,p.y,ORES[p.o][1],3,3);if(R()<.5)flt(p.x,p.y-.4,'+1 '+ORES[p.o][0],ORES[p.o][1])}M.pk.splice(i,1)}else if(p.t>6)M.pk.splice(i,1)}
+  if(d<.9){if(p.cash){const c=Math.ceil(price(p.o)*.6);DG.cash+=c;M.trip.cash+=c;if(R()<.35)flt(p.x,p.y-.4,'+$'+fmt(c),'#ffd54a');boom(p.x,p.y,'#ffd54a',3,3)}else if(addOre(p.o,1)){boom(p.x,p.y,ORES[p.o][1],3,3);if(R()<.5)flt(p.x,p.y-.4,'+1 '+ORES[p.o][0],ORES[p.o][1])}M.pk.splice(i,1)}else if(p.t>6)M.pk.splice(i,1)}
  // Partikel
  for(let i=M.P.length-1;i>=0;i--){const p=M.P[i];p.l-=dt;if(p.ring){if(p.l<=0)M.P.splice(i,1);continue}p.x+=p.vx*dt;p.y+=p.vy*dt;if(p.g)p.vy+=14*dt;p.vx*=Math.exp(-dt*1.5);if(p.l<=0)M.P.splice(i,1)}
  for(let i=M.fl.length-1;i>=0;i--){const f=M.fl[i];f.l-=dt;f.y-=1.4*dt;if(f.l<=0)M.fl.splice(i,1)}
@@ -1324,7 +1334,7 @@ function mkTile(pal,seed){const c=cvs(16,16),x=c.getContext('2d'),r=rnd(seed),pt
   let col=pal[(bi+((px*7+py*13)&1))%3];if(Math.sqrt(b2)-Math.sqrt(b)<1.1)col=pal[3];x.fillStyle=col;x.fillRect(px,py,1,1)}return c}
 function mkOre(i,v){const c=cvs(16,16),x=c.getContext('2d'),r=rnd(i*977+v*131+5),col=ORES[i][1],dk=shade(col,-.45),lt=shade(col,.55),gem=i>=4&&i<9,n=gem?3:4;
  for(let k=0;k<n;k++){const bx=3+(r()*10|0),by=3+(r()*10|0),s=gem?2:(2+(r()*2|0));if(gem){for(let dy=-s;dy<=s;dy++){const w=s-Math.abs(dy);for(let dx=-w;dx<=w;dx++){x.fillStyle=(Math.abs(dx)==w||Math.abs(dy)==s)?dk:col;x.fillRect(bx+dx,by+dy,1,1)}}x.fillStyle=lt;x.fillRect(bx-1,by-1,1,1)}else{x.fillStyle=dk;x.fillRect(bx-1,by-1,s+2,s+2);x.fillStyle=col;x.fillRect(bx,by,s,s);x.fillStyle=lt;x.fillRect(bx,by,1,1)}}return c}
-const TLW=[],BGW=[],TL=()=>TLW[DG.world]||(TLW[DG.world]=WORLDS[DG.world].pal.map((c,l)=>[0,1,2].map(v=>mkTile([shade(c,.08),c,shade(c,-.12),shade(c,-.55)],l*31+v*7+3+DG.world*101)))),BG=()=>BGW[DG.world]||(BGW[DG.world]=[0,1,2].map(v=>{const c=WORLDS[DG.world].bg;return mkTile([shade(c,.05),c,shade(c,-.1),shade(c,-.5)],200+v+DG.world*50)})),ORE=ORES.map((o,i)=>[0,1].map(v=>mkOre(i,v)));
+const TLW=[],BGW=[],TL=()=>TLW[DG.world]||(TLW[DG.world]=WB().pal.map((c,l)=>[0,1,2].map(v=>mkTile([shade(c,.08),c,shade(c,-.12),shade(c,-.55)],l*31+v*7+3+DG.world*101)))),BG=()=>BGW[DG.world]||(BGW[DG.world]=[0,1,2].map(v=>{const c=WB().bg;return mkTile([shade(c,.05),c,shade(c,-.1),shade(c,-.5)],200+v+DG.world*50)})),ORE=ORES.map((o,i)=>[0,1].map(v=>mkOre(i,v)));
 const CHEST=(()=>{const c=cvs(16,16),x=c.getContext('2d');x.fillStyle='#1a1230';x.fillRect(2,4,12,9);x.fillStyle='#8a5a2a';x.fillRect(3,5,10,7);x.fillStyle='#ffd54a';x.fillRect(3,8,10,1);x.fillRect(7,5,2,7);x.fillStyle='#fff3a0';x.fillRect(7,8,2,2);return c})();
 const GAS=(()=>{const c=cvs(16,16),x=c.getContext('2d'),r=rnd(7);for(let k=0;k<6;k++){const bx=2+(r()*12|0),by=2+(r()*12|0);x.fillStyle='#2a6a2a';x.fillRect(bx-1,by-1,4,4);x.fillStyle='#7aff6a';x.fillRect(bx,by,2,2);x.fillStyle='#e0ffc0';x.fillRect(bx,by,1,1)}return c})();
 const LAVA=[0,1,2,3].map(f=>{const c=cvs(16,16),x=c.getContext('2d');for(let py=0;py<16;py++)for(let px=0;px<16;px++){const v=.5+.25*Math.sin(px*.7+f*1.6)+.25*Math.sin(py*.8-f*1.2+px*.2);x.fillStyle=v>.72?'#fff0a0':v>.5?'#ffb030':v>.3?'#ff6a1a':'#c8300a';x.fillRect(px,py,1,1)}return c});
@@ -1361,7 +1371,7 @@ const st=document.createElement('style');st.textContent=`
 const dcv=$('#dcv'),g=dcv.getContext('2d'),DK=cvs(2,2),dk=DK.getContext('2d');let dpr=1;
 function rs(){dpr=Math.min(devicePixelRatio||1,2);M.W=innerWidth;M.H=innerHeight;dcv.width=M.W*dpr;dcv.height=M.H*dpr;DK.width=M.W*dpr;DK.height=M.H*dpr;M.Z=Math.max(2,Math.round(M.H/250))}
 // ---------- Zeichnen ----------
-const BLD=[[44,'shop','Laden'],[50,'work','Werkstatt'],[56,'lab','Labor'],[62,'mine','Minen']];
+const BLD=[[8,'shop','Laden'],[14,'work','Werkstatt'],[20,'lab','Labor'],[26,'mine','Minen']];
 function drawTruck(sx,sy,face,Z,t,thr,drilling){const C0=VEH[DG.veh][4],C1=VEH[DG.veh][5],vi=DG.veh,R=(x,y,w,h,c)=>{g.fillStyle=c;g.fillRect(Math.round(sx+(face>0?x:-x-w)*Z),Math.round(sy+y*Z),w*Z,h*Z)};
  const wa=M.x*3,disc=(cx,cy)=>{for(let dy=-4;dy<=4;dy++){const w=Math.floor(Math.sqrt(20.25-dy*dy));R(cx-w,cy+dy,2*w+1,1,'#161c2c')}R(cx-2,cy-2,5,5,'#3a5a90');R(cx-1,cy-1,3,3,'#6a9ae0');R(cx+Math.round(Math.cos(wa)*3)-0,cy+Math.round(Math.sin(wa)*3),1,1,'#c8e0ff')};
  R(-17,-1,35,7,'#2a1a08');R(-16,0,33,5,C1);for(let i=0;i<8;i++)R(-16+i*4,3,2,2,i%2?'#1a1208':'#ffd24a');
@@ -1378,21 +1388,21 @@ function drawBld(b,x,TS,gy,cx,Wd){const bx=(x-M.cam.x)*TS+Wd/2,w=4.4*TS,Z=TS/16;
  else{g.strokeStyle='#1a1208';g.lineWidth=Z*2;g.beginPath();g.moveTo(w*.2,0);g.lineTo(w*.45,-4.4*TS);g.lineTo(w*.7,0);g.moveTo(w*.28,-TS*1.6);g.lineTo(w*.62,-TS*1.6);g.moveTo(w*.34,-TS*3);g.lineTo(w*.56,-TS*3);g.stroke();g.strokeStyle='#8a93a8';g.lineWidth=Z;g.stroke();g.save();g.translate(w*.45,-4.6*TS);g.rotate(M.t*1.2);g.fillStyle='#e0a020';g.fillRect(-TS*.5,-TS*.12,TS,TS*.24);g.fillRect(-TS*.12,-TS*.5,TS*.24,TS);g.restore();g.fillStyle='#e0a020';g.fillRect(w*.75,-TS*.9,TS*1.4,TS*.9);g.fillStyle='#3a4056';g.fillRect(w*.8,-TS*.6,TS*.5,TS*.6)}
  g.fillStyle='#fff';g.font=`bold ${Math.max(10,TS*.62)}px "Courier New",monospace`;g.textAlign='center';g.shadowColor='#000';g.shadowBlur=4;g.fillText(b[2],w/2,TS*1.7);g.shadowBlur=0;g.restore()}
 function draw(){
- const Wd=M.W,Hd=M.H,Z=M.Z,TS=16*Z,cam=M.cam;cam.x+=(M.x-cam.x)*.12;cam.y+=(M.y-.4-cam.y)*.12;
+ const Wd=M.W,Hd=M.H,Z=M.Z,TS=16*Z,cam=M.cam;cam.x+=(M.x-cam.x)*.12;cam.y+=(M.y-1.2-cam.y)*.12;
  g.setTransform(dpr,0,0,dpr,0,0);g.imageSmoothingEnabled=false;
- const sx=x=>(x-cam.x)*TS+Wd/2,sy=y=>(y-cam.y)*TS+Hd/2,gy=sy(0),shx=(R()-.5)*M.shk*10,shy=(R()-.5)*M.shk*10;
+ const sx=x=>(x-cam.x)*TS+Wd/2,sy=y=>(y-cam.y)*TS+Hd/2,gy=sy(GY),shx=(R()-.5)*M.shk*10,shy=(R()-.5)*M.shk*10;
  g.fillStyle='#1c120e';g.fillRect(0,0,Wd,Hd);
- if(gy>0){const gr=g.createLinearGradient(0,0,0,gy);const WD=WORLDS[DG.world];gr.addColorStop(0,WD.sky[0]);gr.addColorStop(.55,WD.sky[1]);gr.addColorStop(1,WD.sky[2]);g.fillStyle=gr;g.fillRect(0,0,Wd,Math.min(Hd,gy));
+ if(gy>0){const gr=g.createLinearGradient(0,0,0,gy);const WD=WB();gr.addColorStop(0,WD.sky[0]);gr.addColorStop(.55,WD.sky[1]);gr.addColorStop(1,WD.sky[2]);g.fillStyle=gr;g.fillRect(0,0,Wd,Math.min(Hd,gy));
   g.globalCompositeOperation='lighter';const sg=g.createRadialGradient(Wd*.72,gy-TS*5,0,Wd*.72,gy-TS*5,TS*9);sg.addColorStop(0,WD.sun[0]);sg.addColorStop(.3,WD.sun[1]);sg.addColorStop(1,'#0000');g.fillStyle=sg;g.fillRect(0,0,Wd,gy);g.globalCompositeOperation='source-over';
   for(let i=0;i<40;i++){const px=(h2(i,1,5)*Wd*1.3-cam.x*TS*.02)%Wd,py=h2(i,2,5)*gy*.6;g.fillStyle=`rgba(255,255,255,${.3+.5*Math.abs(Math.sin(M.t+i))})`;g.fillRect((px+Wd)%Wd,py,Z,Z)}
   mount(.06,TS*9,WD.mt[0],1.3,gy,Wd,Z);mount(.12,TS*6,WD.mt[1],4.1,gy,Wd,Z);mount(.2,TS*3.4,WD.mt[2],2.2,gy,Wd,Z)}
  g.save();g.translate(shx,shy);
  const x0=Math.floor(cam.x-Wd/2/TS)-1,x1=Math.ceil(cam.x+Wd/2/TS)+1,y0=Math.max(0,Math.floor(cam.y-Hd/2/TS)-1),y1=Math.ceil(cam.y+Hd/2/TS)+1,glow=[],v=VS(),sc=SS().scan,lr=Math.max(v.light,sc),fr=Math.floor(M.t*4)%4;
- for(let ty=y0;ty<=y1&&ty<WR;ty++)for(let tx=Math.max(0,x0);tx<=x1&&tx<WW;tx++){const i=ty*WW+tx,t=WT[i],px=Math.floor(sx(tx)),py=Math.floor(sy(ty)),pw=Math.ceil(TS)+1,L=layerOf(ty),vv=(tx*13+ty*7)%3;
-  if(t==0)g.drawImage(BG()[vv],px,py,pw,pw);else if(t==30)g.drawImage(LAVA[fr],px,py,pw,pw);else if(t==99){g.drawImage(TL()[4][vv],px,py,pw,pw);g.fillStyle='#000a';g.fillRect(px,py,pw,pw)}
-  else{g.drawImage(TL()[L][vv],px,py,pw,pw);if(t>=10&&t<19){g.drawImage(ORE[t-10][(tx+ty)&1],px,py,pw,pw);if(Math.hypot(tx-M.x,ty-M.y)<lr)glow.push([px+TS/2,py+TS/2,t-10])}else if(t==19){g.drawImage(ORE[9][0],px,py,pw,pw)}else if(t==20){g.drawImage(CHEST,px,py,pw,pw);glow.push([px+TS/2,py+TS/2,3])}else if(t==31)g.drawImage(GAS,px,py,pw,pw);
+ for(let ty=y0;ty<=y1&&ty<WR;ty++)for(let tx=Math.max(0,x0);tx<=x1&&tx<WW;tx++){const i=ty*WW+tx,t=WT[i],px=Math.floor(sx(tx)),py=Math.floor(sy(ty)),pw=Math.ceil(TS)+1,L=layerOf(tx),vv=(tx*13+ty*7)%3;
+  if(t==0){if(INR[i])g.drawImage(BG()[vv],px,py,pw,pw)}else if(t==30)g.drawImage(LAVA[fr],px,py,pw,pw);else if(t==99){g.drawImage(TL()[4][vv],px,py,pw,pw);g.fillStyle='#000a';g.fillRect(px,py,pw,pw)}
+  else{g.drawImage(TL()[L][vv],px,py,pw,pw);if(t>=10&&t<19){g.drawImage(ORE[t-10][(tx+ty)&1],px,py,pw,pw);if(Math.hypot(tx-M.x,ty-M.y)<lr)glow.push([px+TS/2,py+TS/2,t-10])}else if(t==19){g.drawImage(ORE[9][0],px,py,pw,pw)}else if(t==20){g.drawImage(CHEST,px,py,pw,pw);glow.push([px+TS/2,py+TS/2,3])}else if(t==31)g.drawImage(GAS,px,py,pw,pw);else if(t==40){g.drawImage(ORE[pileOre()][(tx+ty)&1],px,py,pw,pw);glow.push([px+TS/2,py+TS/2,pileOre()])}
    if(DM[i]>.03){g.globalAlpha=Math.min(1,DM[i]*1.3);g.drawImage(CRACK,px,py,pw,pw);g.globalAlpha=1}}
-  if(ty==0&&t!=0){g.fillStyle='#e0b068';g.fillRect(px,py,pw,Z*1.5)}}
+  if(ty==GY&&t!=0&&WT[i-WW]==0){g.fillStyle='#e0b068';g.fillRect(px,py,pw,Z*1.5)}}
  if(gy>-TS*6&&gy<Hd+TS)for(const b of BLD)drawBld(b,b[0],TS,gy,cam.x,Wd);
  // Beute & Bomben
  for(const p of M.pk){if(p.t<0)continue;const px=sx(p.x),py=sy(p.y);g.fillStyle=ORES[p.o][1];g.fillRect(px-Z*1.5,py-Z*1.5,Z*3,Z*3);g.globalCompositeOperation='lighter';const gr=g.createRadialGradient(px,py,0,px,py,TS*.7);gr.addColorStop(0,ORES[p.o][1]+'aa');gr.addColorStop(1,'#0000');g.fillStyle=gr;g.fillRect(px-TS,py-TS,TS*2,TS*2);g.globalCompositeOperation='source-over'}
@@ -1404,7 +1414,7 @@ function draw(){
   const px=sx(p.x),py=sy(p.y),s=p.s*Z*(p.sm?(1.5-a):1);if(p.add)g.globalCompositeOperation='lighter';g.globalAlpha=p.sm?a*.5:a;g.fillStyle=p.c;g.fillRect(px-s/2,py-s/2,s,s);g.globalAlpha=1;g.globalCompositeOperation='source-over'}
  g.restore();
  // Dunkelheit
- const dkv=Math.min(.95,Math.max(0,(M.y-3)/90));
+ const dkv=Math.min(.8,Math.max(0,(M.x-X0-6)/(LEN*.9))+Math.max(0,(M.y-GY-3)/60))*(M.x>X0-2?1:0);
  if(dkv>.02){dk.setTransform(dpr,0,0,dpr,0,0);dk.globalCompositeOperation='source-over';dk.clearRect(0,0,Wd,Hd);dk.fillStyle=`rgba(3,2,12,${dkv})`;dk.fillRect(0,0,Wd,Hd);dk.globalCompositeOperation='destination-out';const cx=sx(M.x),cy=sy(M.y),rr=v.light*TS;const gr=dk.createRadialGradient(cx,cy,0,cx,cy,rr);gr.addColorStop(0,'rgba(0,0,0,1)');gr.addColorStop(.55,'rgba(0,0,0,.85)');gr.addColorStop(1,'rgba(0,0,0,0)');dk.fillStyle=gr;dk.fillRect(cx-rr,cy-rr,rr*2,rr*2);
   if(sc>0){for(const q of glow.slice(0,60)){const h=dk.createRadialGradient(q[0],q[1],0,q[0],q[1],TS*1.5);h.addColorStop(0,'rgba(0,0,0,.9)');h.addColorStop(1,'rgba(0,0,0,0)');dk.fillStyle=h;dk.fillRect(q[0]-TS*1.5,q[1]-TS*1.5,TS*3,TS*3)}}
   g.drawImage(DK,0,0,Wd,Hd)}
@@ -1420,7 +1430,7 @@ function draw(){
 const labCost=()=>Math.ceil(60*Math.pow(1.7,DG.lab)),stnOk=i=>{const f=SS().f;return(i<2?f.stn1:i<4?f.stn2:f.stn3)&&(DG.mined[i]|0)>=10};
 function newCtr(){const s=SS(),mx=Math.min(8,ORES.filter(o=>o[5]*2<=Math.max(24,DG.rec+30)).length-1),i=Math.min(mx,(R()*(mx+1))|0),q=Math.max(3,Math.round((14-i*1.2)*(.6+R()))),pr=ORES[i][4]*(1+s.sell)*CM();return{i,q,rew:Math.ceil(q*pr*1.9),rp:+(1+i*1.5).toFixed(1)}}
 function throwBomb(k){const s=SS(),c=CONS[k];if(!c||c[3]<=0||(DG.cons[k]|0)<1)return;if(c[4]&&!s.f[c[4]])return;DG.cons[k]--;M.sel=k;const a=M.aim[0]||M.aim[1]?M.aim:[0,1],sp=12;M.B.push({x:M.x,y:M.y,vx:a[0]*sp+M.vx*.5,vy:a[1]*sp+(a[1]==0?-3:0),r:c[3],fuse:3,st:0});sfx('arrow',.6)}
-function useCons(k){if(CONS[k][3]>0)return throwBomb(k);if((DG.cons[k]|0)<1)return;const v=VS();if(k=='rep'){if(M.hull>=v.hp)return;M.hull=Math.min(v.hp,M.hull+v.hp*.5)}else if(k=='fuel'){if(M.fuel>=v.fuel)return;M.fuel=Math.min(v.fuel,M.fuel+v.fuel*.5)}else if(k=='tele'){if(M.y<1.5)return;boom(M.x,M.y,'#9ae8ff',40,9);M.flash=.6;sfx('horn');toSurface()}DG.cons[k]--;sfx('click');hud()}
+function useCons(k){if(CONS[k][3]>0)return throwBomb(k);if((DG.cons[k]|0)<1)return;const v=VS();if(k=='rep'){if(M.hull>=v.hp)return;M.hull=Math.min(v.hp,M.hull+v.hp*.5)}else if(k=='fuel'){if(M.fuel>=v.fuel)return;M.fuel=Math.min(v.fuel,M.fuel+v.fuel*.5)}else if(k=='tele'){if(atBase())return;boom(M.x,M.y,'#9ae8ff',40,9);M.flash=.6;sfx('horn');toSurface()}DG.cons[k]--;sfx('click');hud()}
 function act(a,v){const s=SS();
  if(a=='sell'){let tot=0;for(let i=0;i<10;i++){tot+=(DG.cargo[i]|0)*price(i);DG.cargo[i]=0}if(!tot)return;DG.cash+=tot;M.trip.cash+=tot;sfx('ding');toast('Verkauft für $'+fmt(tot))}
  else if(a=='fuel'){const vs=VS(),unit=.5*(1+tier('fuel')*.7),can=Math.min(vs.fuel-M.fuel,DG.cash/unit);if(can<=.05)return toast(M.fuel>=vs.fuel-.05?'Tank ist voll':'Nicht genug Geld');DG.cash-=can*unit;M.fuel+=can;sfx('click')}
@@ -1428,13 +1438,13 @@ function act(a,v){const s=SS();
  else if(a=='up'){const t=tier(v)+1;if(t>=LINES[v][2].length)return;if(t>s.cap[v])return toast('Erst im Labor erforschen!');const c=LINES[v][2][t];if(DG.cash<c)return toast('Nicht genug Geld');DG.cash-=c;DG.up[v]=t;SC=null;sfx('ding')}
  else if(a=='cons'){const c=CONS[v];if(c[4]&&!s.f[c[4]])return;if(DG.cash<c[2])return toast('Nicht genug Geld');DG.cash-=c[2];DG.cons[v]=(DG.cons[v]|0)+1;sfx('click')}
  else if(a=='lab'){const c=labCost();if(DG.cash<c)return toast('Nicht genug Geld');DG.cash-=c;DG.lab++;sfx('ding')}
- else if(a=='world'){if(M.y>1.5)return toast('Nur an der Oberfläche');DG.world=+v;M.B=[];M.pk=[];genWorld();M.x=40;M.y=-.7;toast('Reise: '+WORLDS[DG.world].n);sfx('horn',.5)}
- else if(a=='veh'||a=='tool'){const L=a=='veh'?VEH:TOOLS,own=a=='veh'?DG.ownV:DG.ownT,i=+v;if(M.y>1.5)return toast('Nur an der Oberfläche');if(!own[i]){if(DG.cash<L[i][2])return toast('Nicht genug Geld');DG.cash-=L[i][2];own[i]=1}if(a=='veh')DG.veh=i;else DG.tool=i;const vs=VS();M.hull=Math.min(M.hull,vs.hp);M.fuel=Math.min(M.fuel,vs.fuel);sfx('ding');toast(L[i][0]+' ausgerüstet')}
+ else if(a=='world'){if(!atBase())return toast('Nur an der Basis');DG.world=+v;M.B=[];M.pk=[];toSurface();toast('Level '+(DG.world+1)+': '+WB().n);sfx('horn',.5)}
+ else if(a=='veh'||a=='tool'){const L=a=='veh'?VEH:TOOLS,own=a=='veh'?DG.ownV:DG.ownT,i=+v;if(!atBase())return toast('Nur an der Basis');if(!own[i]){if(DG.cash<L[i][2])return toast('Nicht genug Geld');DG.cash-=L[i][2];own[i]=1}if(a=='veh')DG.veh=i;else DG.tool=i;const vs=VS();M.hull=Math.min(M.hull,vs.hp);M.fuel=Math.min(M.fuel,vs.fuel);sfx('ding');toast(L[i][0]+' ausgerüstet')}
  else if(a=='node')selD=v;
  else if(a=='buynode'){const n=NODES.find(z=>z.id==selD);if(!n||DG.rs[n.id])return;if(n.req&&!DG.rs[n.req])return toast('Gesperrt – erst den Vorgänger erforschen');if(DG.rp<n.cost)return toast('Nicht genug Forschungspunkte');DG.rp-=n.cost;DG.rs[n.id]=1;SC=null;sfx('ding');toast('Erforscht: '+n.name)}
  else if(a=='sta'){const i=+v,L=DG.stn[i]|0,c=Math.ceil(STC[i]*Math.pow(1.38,L));if(DG.cash<c)return toast('Nicht genug Geld');DG.cash-=c;DG.stn[i]=L+1;sfx('click')}
  else if(a=='ctr'){const k=+v,c=DG.ctr[k];if(!c||(DG.cargo[c.i]|0)<c.q)return toast('Zu wenig '+ORES[c.i][0]);DG.cargo[c.i]-=c.q;DG.cash+=c.rew;DG.rp+=c.rp;DG.ctr[k]=newCtr();sfx('ding');toast('Auftrag erfüllt: +$'+fmt(c.rew))}
- else if(a=='pre'){const gain=DG.rec>=200?Math.floor(Math.pow(DG.rec/100,1.3)):0;if(!gain||!confirm('Kernbohrung: Alles wird zurückgesetzt (außer Rekord und Kerne). Du erhältst '+gain+' Kerne (+'+gain*20+'% auf Geld, FP und Bohrkraft). Fortfahren?'))return;DG.cash=30;DG.rp=0;DG.up={};DG.rs={};DG.veh=0;DG.tool=0;DG.ownV={0:1};DG.ownT={0:1};DG.world=0;DG.stn={};DG.cons={};DG.cargo={};DG.lab=0;DG.ctr=[];DG.cores+=gain;SC=null;M.fuel=20;M.hull=100;toSurface();sfx('horn');toast('Kernbohrung! +'+gain+' Kerne')}
+ else if(a=='pre'){const gain=DG.lmax>=5?Math.floor(Math.pow(DG.lmax,1.4)):0;if(!gain||!confirm('Kernbohrung: Alles wird zurückgesetzt (außer Rekord und Kerne). Du erhältst '+gain+' Kerne (+'+gain*20+'% auf Geld, FP und Bohrkraft). Fortfahren?'))return;DG.cash=30;DG.rp=0;DG.pile={};DG.up={};DG.rs={};DG.veh=0;DG.tool=0;DG.ownV={0:1};DG.ownT={0:1};DG.world=0;DG.stn={};DG.cons={};DG.cargo={};DG.lab=0;DG.ctr=[];DG.cores+=gain;SC=null;M.fuel=20;M.hull=100;toSurface();sfx('horn');toast('Kernbohrung! +'+gain+' Kerne')}
  renderPanel();hud();save()}
 // ---------- Panels ----------
 let pk=null,selD=null;const rowIc=k=>`<img class="ic" src="${IC[k]}">`;
@@ -1450,13 +1460,13 @@ function pLab(b,h){h.textContent='🔬 Forschungszentrum';const CW=4.6,RH=5.8,cx
  let t=`<div id="mtree" style="position:relative;margin:0 auto;width:${11*CW+1}rem;height:${5*RH}rem"><svg style="position:absolute;inset:0;width:100%;height:100%" viewBox="0 0 ${11*CW+1} ${5*RH}" preserveAspectRatio="none">`;
  for(const n of NODES)if(n.req){const q=NODES.find(z=>z.id==n.req);t+=`<line x1="${cx(q.x)}" y1="${cy(q.y)}" x2="${cx(n.x)}" y2="${cy(n.y)}" stroke="${DG.rs[n.req]?'#ffe27a':'#1a2a55'}" stroke-width=".28" stroke-linecap="round"/>`}
  t+='</svg>';for(const n of NODES){const lk=n.req&&!DG.rs[n.req],ow=own(n),can=!lk&&!ow&&DG.rp>=n.cost;t+=`<div class="mn ${n.hub?'hub':''} ${lk?'lk':''} ${ow?'mx':''} ${can?'can':''} ${selD==n.id?'sel':''}" data-a="node" data-v="${n.id}" style="left:${cx(n.x)-(n.hub?2:1.75)}rem;top:${cy(n.y)-(n.hub?2:1.75)}rem"><img src="${IC[n.icon]}"></div>`}t+='</div>';
- const sn=NODES.find(z=>z.id==selD),gain=DG.rec>=200?Math.floor(Math.pow(DG.rec/100,1.3)):0;
- b.innerHTML=`<div class="qr">${rowIc('d_lab')}<div style="flex:1"><b>Labor Stufe ${DG.lab}</b> · ${fmt(rpPerSec()*60)} FP/min<br><small>Forschungspunkte: ${fmt(DG.rp)} · Fossilien und Truhen geben Extra-FP</small></div><button class="dbtn" data-a="lab">Ausbauen $${fmt(labCost())}</button></div>`+t+`<div id="mnfo" style="position:sticky;bottom:-.7rem;margin:.6rem -.7rem -.7rem;padding:.6rem .9rem;background:#0b1030;color:#fff;display:flex;gap:.8rem;align-items:center;justify-content:space-between;border-top:.2rem solid #fff">${sn?`<div><b style="color:#ffe27a">${sn.name}</b> · ${sn.desc}${sn.branch?' ('+sn.branch+')':''}<br>${DG.rs[sn.id]?'Erforscht ✔':'Kosten: '+fmt(sn.cost)+' FP'+((sn.req&&!DG.rs[sn.req])?' · gesperrt':'')}</div>${DG.rs[sn.id]?'':'<button class="dbtn" data-a="buynode">Erforschen</button>'}`:'<div>Tippe auf einen Knoten. Gelb = verfügbar, grau = gesperrt (Vorgänger und Forschungsstufe zuerst).</div>'}</div>`+`<div class="qr" style="margin-top:1rem">${rowIc('d_core')}<div style="flex:1"><b>Kernbohrung (Aufstieg)</b> – Kerne: ${DG.cores}<br><small>Ab 200 m Rekord. Setzt Fortschritt zurück; jeder Kern gibt dauerhaft +20% Geld, FP und Bohrkraft.</small></div><button class="dbtn" data-a="pre" ${gain?'':'disabled style="opacity:.4"'}>+${gain} Kerne</button></div>`}
+ const sn=NODES.find(z=>z.id==selD),gain=DG.lmax>=5?Math.floor(Math.pow(DG.lmax,1.4)):0;
+ b.innerHTML=`<div class="qr">${rowIc('d_lab')}<div style="flex:1"><b>Labor Stufe ${DG.lab}</b> · ${fmt(rpPerSec()*60)} FP/min<br><small>Forschungspunkte: ${fmt(DG.rp)} · Fossilien und Truhen geben Extra-FP</small></div><button class="dbtn" data-a="lab">Ausbauen $${fmt(labCost())}</button></div>`+t+`<div id="mnfo" style="position:sticky;bottom:-.7rem;margin:.6rem -.7rem -.7rem;padding:.6rem .9rem;background:#0b1030;color:#fff;display:flex;gap:.8rem;align-items:center;justify-content:space-between;border-top:.2rem solid #fff">${sn?`<div><b style="color:#ffe27a">${sn.name}</b> · ${sn.desc}${sn.branch?' ('+sn.branch+')':''}<br>${DG.rs[sn.id]?'Erforscht ✔':'Kosten: '+fmt(sn.cost)+' FP'+((sn.req&&!DG.rs[sn.req])?' · gesperrt':'')}</div>${DG.rs[sn.id]?'':'<button class="dbtn" data-a="buynode">Erforschen</button>'}`:'<div>Tippe auf einen Knoten. Gelb = verfügbar, grau = gesperrt (Vorgänger und Forschungsstufe zuerst).</div>'}</div>`+`<div class="qr" style="margin-top:1rem">${rowIc('d_core')}<div style="flex:1"><b>Kernbohrung (Aufstieg)</b> – Kerne: ${DG.cores}<br><small>Ab 5 geschafften Levels. Setzt Fortschritt zurück; jeder Kern gibt dauerhaft +20% Geld, FP und Bohrkraft.</small></div><button class="dbtn" data-a="pre" ${gain?'':'disabled style="opacity:.4"'}>+${gain} Kerne</button></div>`}
 function pMine(b,h){h.textContent='⛏ Bohrstationen (Idle)';const s=SS();let x=`<div class="qr"><div style="flex:1"><b>Gesamteinkommen: $${fmt(incomePerSec())}/s</b><br><small>Stationen fördern automatisch – auch offline (bis ${s.offline} h). Schalte sie im Labor (Automatisierung) frei und fördere je 10 Erze selbst.</small></div></div>`;
  for(let i=0;i<9;i++){const L=DG.stn[i]|0,c=Math.ceil(STC[i]*Math.pow(1.38,L)),ok=stnOk(i),f=SS().f,need=(i<2?f.stn1:i<4?f.stn2:f.stn3)?((DG.mined[i]|0)>=10?'':'Fördere erst 10 '+ORES[i][0]):'Forschung nötig';x+=`<div class="qr">${rowIc(ORES[i][7])}<div style="flex:1"><b>${ORES[i][0]}-Mine</b> Stufe ${L}<br><small>${L?fmt(L*STN[i]*(1+s.stn)*CM()*60)+' '+ORES[i][0]+'/min = $'+fmt(L*STN[i]*(1+s.stn)*CM()*price(i)*.8)+'/s':'Noch nicht gebaut'}${ok?'':' · '+need}</small></div><button class="dbtn" data-a="sta" data-v="${i}" ${ok?'':'disabled style="opacity:.4"'}>${L?'Ausbauen':'Bauen'} $${fmt(c)}</button></div>`}
  b.innerHTML=x}
-function pGarage(b,h){h.textContent='🚗 Garage & Weltkarte';const hd=t=>`<h3 style="margin:.6rem 0 .4rem;font-size:1rem;color:#ffd070">${t}</h3>`;let x=hd('🌍 Welten (mehr Gewinn, härteres Gestein, seltenere Erze näher)');
- WORLDS.forEach((w,i)=>{const ok=DG.rec>=WU[i],cur=DG.world==i;x+=`<div class="qr" style="${cur?'border-color:#ffd070':''}">${rowIc(w.ic)}<div style="flex:1"><b>${w.n}</b><br><small>Erzpreise ×${w.price} · Gestein ×${w.hard}${ok?'':' · gesperrt bis '+WU[i]+' m Rekord'}</small></div><button class="dbtn" data-a="world" data-v="${i}" ${ok&&!cur?'':'disabled style="opacity:.4"'}>${cur?'Aktiv':'Reisen'}</button></div>`});
+function pGarage(b,h){h.textContent='🚗 Garage & Weltkarte';const hd=t=>`<h3 style="margin:.6rem 0 .4rem;font-size:1rem;color:#ffd070">${t}</h3>`;let x=hd('🏔 Levels – baue den Riesenhaufen am Ende ab, um das nächste freizuschalten. Frühere Levels kannst du jederzeit wiederholen.');
+ for(let i=0;i<15;i++){const w=WORLDS[i%5],t=Math.floor(i/5),ok=i<=DG.lmax,cur=DG.world==i,pc=Math.round((DG.pile[i]||0)*100);x+=`<div class="qr" style="${cur?'border-color:#ffd070':''}">${rowIc(w.ic)}<div style="flex:1"><b>Level ${i+1}: ${w.n}${t?' '+['','II','III'][t]:''}</b>${i<DG.lmax?' ✔':''}<br><small>Erzpreise ×${+(w.price*(1+t*5)).toFixed(1)} · Gestein ×${+(w.hard*(1+t*3.2)).toFixed(1)} · Länge ${(90+9*i)*2} m${pc?' · Haufen '+pc+'%':''}${ok?'':' · erst Level '+i+' schaffen'}</small></div><button class="dbtn" data-a="world" data-v="${i}" ${ok&&!cur?'':'disabled style="opacity:.4"'}>${cur?'Aktiv':'Reisen'}</button></div>`}
  x+=hd('🚜 Fahrzeuge');VEH.forEach((v,i)=>{const own=DG.ownV[i],cur=DG.veh==i,m=v[3],st=Object.keys(m).map(k=>({pow:'Bohrkraft',hp:'Hülle',fuel:'Tank',cap:'Fracht',eng:'Antrieb',light:'Licht'}[k]+' ×'+m[k])).join(' · ')||'Grundmodell';x+=`<div class="qr" style="${cur?'border-color:#ffd070':''}">${rowIc(v[1])}<div style="flex:1"><b>${v[0]}</b><br><small>${st}</small></div><button class="dbtn" data-a="veh" data-v="${i}" ${cur?'disabled style="opacity:.4"':''}>${cur?'Aktiv':own?'Nutzen':'$'+fmt(v[2])}</button></div>`});
  x+=hd('🛠 Werkzeuge (Bohrköpfe)');TOOLS.forEach((t,i)=>{const own=DG.ownT[i],cur=DG.tool==i;x+=`<div class="qr" style="${cur?'border-color:#ffd070':''}">${rowIc(t[1])}<div style="flex:1"><b>${t[0]}</b><br><small>${t[3]}${i?' Höherer Spritverbrauch.':''}</small></div><button class="dbtn" data-a="tool" data-v="${i}" ${cur?'disabled style="opacity:.4"':''}>${cur?'Aktiv':own?'Nutzen':'$'+fmt(t[2])}</button></div>`});b.innerHTML=x}
 function renderPanel(){if(!pk)return;const b=$('#dpan .dpb'),h=$('#dpan h3'),sc=b.scrollTop;({garage:pGarage,shop:pShop,work:pWork,lab:pLab,mine:pMine})[pk](b,h);b.scrollTop=sc}
@@ -1466,9 +1476,9 @@ $('#dpan .dpb').addEventListener('click',e=>{const t=e.target.closest('[data-a]'
 document.querySelectorAll('#dbase .dbtn').forEach(b=>{b.innerHTML=icn({garage:'d_truck',shop:'d_shop',work:'d_work',lab:'d_lab',mine:'d_mine'}[b.dataset.p]);b.title={garage:'Garage & Weltkarte',shop:'Verkaufsladen',work:'Werkstatt',lab:'Forschung',mine:'Bohrstationen'}[b.dataset.p];b.onclick=()=>openPanel(b.dataset.p)});
 // ---------- HUD ----------
 let lastC='';function hud(){const v=VS();DG.last=Date.now();const inc=incomePerSec();
- $('#dtop').innerHTML=`<div>${icn('coin','ci')}$${fmt(DG.cash)}</div><div>${icn('d_rp','ci')}${fmt(DG.rp)} FP</div><div>${WORLDS[DG.world].n} · ⬇ ${Math.max(0,Math.round(M.y*2))} m <small style="opacity:.7">Rekord ${DG.rec} m</small></div>`+(inc>0?`<div style="font-size:.85rem;opacity:.85">+$${fmt(inc)}/s</div>`:'');
+ $('#dtop').innerHTML=`<div>${icn('coin','ci')}$${fmt(DG.cash)}</div><div>${icn('d_rp','ci')}${fmt(DG.rp)} FP</div><div>Lvl ${(DG.world|0)+1} ${WB().n} · ➡ ${Math.max(0,Math.round((M.x-X0)*2))}/${LEN*2} m</div><div style="font-size:.85rem">🏔 Haufen ${Math.round((1-pileLeft/pileTotal)*100)}%</div>`+(inc>0?`<div style="font-size:.85rem;opacity:.85">+$${fmt(inc)}/s</div>`:'');
  const bs=document.querySelectorAll('#dbars .db'),u=used();bs[0].firstChild.style.transform=`scaleX(${M.fuel/v.fuel})`;bs[0].lastChild.textContent='TREIBSTOFF '+Math.ceil(M.fuel)+'/'+v.fuel;bs[1].firstChild.style.transform=`scaleX(${Math.max(0,M.hull)/v.hp})`;bs[1].lastChild.textContent='HÜLLE '+Math.ceil(Math.max(0,M.hull))+'/'+v.hp;bs[2].firstChild.style.transform=`scaleX(${Math.min(1,u/v.cap)})`;bs[2].lastChild.textContent='LADUNG '+u+'/'+v.cap;
- $('#dbase').style.display=(M.y<.8&&!M.under)?'flex':'none';
+ $('#dbase').style.display=atBase()?'flex':'none';
  const s=SS();let c='';for(const k in CONS){const n=DG.cons[k]|0,cc=CONS[k];if(cc[4]&&!s.f[cc[4]])continue;if(!n&&k!='dyn')continue;c+=`<button class="dbtn ${M.sel==k&&cc[3]?'sel':''}" data-k="${k}" title="${cc[0]}">${icn(cc[1])}<b>${n}</b></button>`}
  if(c!=lastC){lastC=c;$('#dcons').innerHTML=c;document.querySelectorAll('#dcons .dbtn').forEach(b=>b.onclick=()=>useCons(b.dataset.k))}
  $('#dbomb').innerHTML=icn(CONS[M.sel||'dyn'][1])}
@@ -1481,7 +1491,7 @@ addEventListener('keydown',e=>{if(!M.open)return;const k=e.key.length==1?e.key.t
  j.addEventListener('pointerdown',e=>{id=e.pointerId;j.setPointerCapture(id);mv(e);e.stopPropagation()});j.addEventListener('pointermove',e=>{if(e.pointerId==id)mv(e)});const up=e=>{if(e.pointerId==id){id=null;M.joy=null;kn.style.setProperty('--x','0px');kn.style.setProperty('--y','0px')}};j.addEventListener('pointerup',up);j.addEventListener('pointercancel',up)}
 // ---------- Schleife / Öffnen ----------
 let acc=0,hudT=0,prT=0;function loop(now){if(!M.open)return;const dt=Math.min(.1,(now-M.last)/1000);M.last=now;acc+=dt;let n=0;while(acc>=1/60&&n<6){step(1/60);acc-=1/60;n++}draw();hudT-=dt;prT-=dt;if(hudT<=0){hudT=.1;hud()}if(prT<=0){prT=1;if(pk)renderPanel()}requestAnimationFrame(loop)}
-function openDig(){if(M.open)return;M.open=1;window.digOpen=1;root.style.display='block';rs();if(!WT){M.fuel=DG.fuel==null?VS().fuel:DG.fuel;M.hull=DG.hull==null?VS().hp:DG.hull;for(let i=0;i<10;i++)M.mk[i]=1;genWorld();M.x=40;M.y=-.7;M.cam.x=40}M.last=performance.now();hud();if(M.txt){toast(M.txt);M.txt=''}requestAnimationFrame(loop)}
+function openDig(){if(M.open)return;M.open=1;window.digOpen=1;root.style.display='block';rs();if(!WT){M.fuel=DG.fuel==null?VS().fuel:DG.fuel;M.hull=DG.hull==null?VS().hp:DG.hull;for(let i=0;i<10;i++)M.mk[i]=1;genWorld();M.x=BASEX;M.y=GY-.7;M.cam.x=BASEX;M.cam.y=GY-1}M.last=performance.now();hud();if(M.txt){toast(M.txt);M.txt=''}requestAnimationFrame(loop)}
 function closeDig(){M.open=0;window.digOpen=0;root.style.display='none';closePanel();save()}
 window.openDig=openDig;window.closeDig=closeDig;$('#dhome').onclick=()=>window.showLauncher();addEventListener('resize',()=>{if(M.open)rs()});
 setInterval(()=>{if(!M.open){eco(1);DG.last=Date.now()}},1000);
